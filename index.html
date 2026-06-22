@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Triple A - Shop</title>
+  <style>
+    body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f4; color: #333; }
+    
+    /* Header & Theme */
+    .header-container { background-color: #0b0b0b; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; color: white; border-bottom: 2px solid #ff4757; position: sticky; top: 0; z-index: 100; }
+    .header-container h1 { margin: 0; color: #ff4757; text-transform: uppercase; letter-spacing: 2px; }
+    .cart-btn { background: #ff4757; color: white; border: none; padding: 10px 20px; border-radius: 25px; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.3s; }
+    .cart-btn:hover { background: #e84118; }
+
+    /* Search Bar */
+    .search-container { max-width: 600px; margin: 20px auto; padding: 0 20px; }
+    #searchBar { width: 100%; padding: 12px 20px; border-radius: 30px; border: 1px solid #ddd; font-size: 16px; outline: none; box-sizing: border-box; }
+    #searchBar:focus { border-color: #ff4757; }
+
+    /* Category Filters */
+    .filter-container { text-align: center; margin-bottom: 20px; }
+    .filter-btn { background: white; color: #333; border: 1px solid #ddd; padding: 8px 20px; cursor: pointer; border-radius: 20px; margin: 5px; font-weight: bold; transition: 0.3s; }
+    .filter-btn:hover, .filter-btn.active { background: #ff4757; color: white; border-color: #ff4757; }
+
+    /* Product Grid */
+    .main-wrapper { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+    .product-card { background: white; border-radius: 8px; overflow: hidden; cursor: pointer; transition: 0.2s; border: 1px solid #eee; }
+    .product-card:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); border-color: #ff4757; }
+    .product-card img { width: 100%; height: 250px; object-fit: cover; }
+    .product-info { padding: 15px; }
+    .product-info h3 { margin: 0 0 5px 0; font-size: 16px; color: #222; }
+    .product-info .price { margin: 0; font-size: 18px; color: #ff4757; font-weight: bold; }
+    .stars { color: #f39c12; font-size: 14px; margin-bottom: 5px; }
+
+    /* Fullscreen Modal */
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; z-index: 1000; overflow-y: auto; }
+    .modal-header { padding: 15px 20px; background: #fff; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; }
+    .back-btn { background: transparent; color: #333; border: none; font-size: 18px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+    .back-btn:hover { color: #ff4757; }
+
+    /* Daraz Style Product View */
+    .product-view-container { display: flex; flex-wrap: wrap; max-width: 1000px; margin: 20px auto; padding: 20px; gap: 40px; }
+    .image-gallery { flex: 1; min-width: 300px; }
+    .main-image { width: 100%; height: 400px; object-fit: contain; border: 1px solid #eee; border-radius: 8px; margin-bottom: 10px; background: #fafafa; }
+    .thumbnail-row { display: flex; gap: 10px; overflow-x: auto; }
+    .thumbnail-row img { width: 60px; height: 60px; object-fit: cover; border: 2px solid transparent; border-radius: 4px; cursor: pointer; transition: 0.2s; }
+    .thumbnail-row img:hover, .thumbnail-row img.active { border-color: #ff4757; }
+
+    .product-details { flex: 1; min-width: 300px; text-align: left; }
+    .product-details h2 { margin: 0 0 10px 0; font-size: 24px; }
+    .product-details .price { font-size: 28px; color: #ff4757; font-weight: bold; margin: 10px 0; }
+    .product-details .desc { color: #666; font-size: 15px; line-height: 1.5; margin-bottom: 20px; }
+    
+    .action-btns { display: flex; gap: 10px; margin-top: 20px; }
+    .btn { padding: 12px 20px; font-size: 16px; font-weight: bold; border: none; cursor: pointer; border-radius: 5px; transition: 0.3s; flex: 1; text-align: center; }
+    .btn-cart { background: #f0932b; color: white; }
+    .btn-cart:hover { background: #e58e26; }
+    .btn-buy { background: #ff4757; color: white; }
+    .btn-buy:hover { background: #e84118; }
+
+    /* Forms & Cart Modal */
+    #orderFormSection, #cartSection { display: none; max-width: 600px; margin: 20px auto; padding: 20px; background: #f9f9f9; border-radius: 8px; border: 1px solid #ddd; }
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; font-weight: bold; margin-bottom: 5px; color: #333; }
+    input, select, textarea { width: 100%; padding: 10px; background: #fff; border: 1px solid #ccc; border-radius: 5px; font-size: 15px; box-sizing: border-box; outline: none; }
+    input:focus, select:focus, textarea:focus { border-color: #ff4757; }
+    
+    /* Pre-payment Box */
+    .payment-box { background: #e8f6f3; border: 1px solid #1abc9c; padding: 15px; border-radius: 5px; margin-top: 10px; display: none; }
+    .payment-box p { margin: 0 0 10px 0; font-size: 14px; color: #16a085; font-weight: bold; }
+
+    /* Cart Items */
+    .cart-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #ddd; }
+    .cart-item p { margin: 0; }
+    .remove-btn { color: red; cursor: pointer; font-size: 14px; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+<div class="header-container">
+  <h1>Triple A</h1>
+  <button class="cart-btn" onclick="openCart()">🛒 Cart (<span id="cartCount">0</span>)</button>
+</div>
+
+<div class="search-container">
+  <input type="text" id="searchBar" placeholder="Search products..." onkeyup="filterProducts()">
+</div>
+
+<div class="filter-container">
+  <button class="filter-btn active" onclick="setCategory('all', this)">All</button>
+  <button class="filter-btn" onclick="setCategory('T-Shirt', this)">T-Shirts</button>
+  <button class="filter-btn" onclick="setCategory('Wall Mate', this)">Wallmates</button>
+</div>
+
+<div class="main-wrapper">
+  <div id="productGrid" class="product-grid"></div>
+</div>
+
+<!-- Product View Modal -->
+<div id="productModal" class="modal-overlay">
+  <div class="modal-header">
+    <button class="back-btn" onclick="closeModal('productModal')"><span>&#8592;</span> Back</button>
+  </div>
+  
+  <div class="product-view-container" id="productDetailView">
+    <div class="image-gallery">
+      <img id="mainSliderImg" class="main-image" src="">
+      <div class="thumbnail-row" id="thumbnailRow"></div>
+    </div>
+    
+    <div class="product-details">
+      <h2 id="modalTitle">Product Title</h2>
+      <div class="stars" id="modalReviews">&#9733;&#9733;&#9733;&#9733;&#9734; (0 Reviews)</div>
+      <p class="price" id="modalPrice">0 BDT</p>
+      <p class="desc" id="modalDesc">Product description goes here.</p>
+
+      <div class="form-group" id="sizeGroup">
+        <label id="sizeLabel">Select Size</label>
+        <select id="sizeSelect" onchange="updateViewPrice()"></select>
+      </div>
+
+      <div class="action-btns">
+        <button class="btn btn-cart" onclick="addToCart()">Add to Cart</button>
+        <button class="btn btn-buy" onclick="showOrderForm(false)">Buy Now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Form -->
+  <div id="orderFormSection">
+    <h3 style="text-align: center; border-bottom: 2px solid #ddd; padding-bottom: 10px;">Checkout Details</h3>
+    <form action="https://formspree.io/f/mnjkaokz" method="POST" id="checkoutForm">
+      <input type="hidden" name="Order_Items" id="finalProdName">
+      <input type="hidden" name="Total_Price" id="finalPriceInput">
+      
+      <div class="form-group"><label>Your Name</label><input type="text" name="Name" required></div>
+      <div class="form-group"><label>Phone Number</label><input type="text" name="Phone" required></div>
+      <div class="form-group"><label>Delivery Address</label><textarea name="Address" rows="3" required></textarea></div>
+      
+      <!-- নতুন নিয়মে Delivery Area আপডেট করা হয়েছে -->
+      <div class="form-group">
+        <label>Delivery Area</label>
+        <select id="deliveryLocation" name="Delivery_Location" onchange="togglePaymentBox()">
+          <option value="Narayanganj">Narayanganj (60 BDT)</option>
+          <option value="Dhaka">Dhaka (115 BDT)</option>
+          <option value="Other Districts">Other Districts / Rest of Bangladesh (135 BDT)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Payment Method</label>
+        <select id="paymentMethod" name="Payment_Method" onchange="togglePaymentBox()">
+          <option value="Cash on Delivery">Cash on Delivery (+20 BDT)</option>
+          <option value="Pre-payment">Pre-payment (bKash/Nagad)</option>
+        </select>
+      </div>
+      
+      <div class="payment-box" id="bkashNagadSection">
+        <p>Send Total Amount to: <strong>01621939397 (bKash/Nagad Personal)</strong></p>
+        <select name="Paid_Via" style="margin-bottom: 10px;">
+          <option value="bKash">bKash</option>
+          <option value="Nagad">Nagad</option>
+        </select>
+        <input type="text" name="TrxID" placeholder="Enter Transaction ID (TrxID)">
+      </div>
+      
+      <h3 style="text-align: right; color: #ff4757;" id="checkoutTotalDisplay">Total: 0 BDT</h3>
+      <button type="submit" class="btn btn-buy" style="width:100%;">Confirm Order</button>
+    </form>
+  </div>
+</div>
+
+<!-- Cart Modal -->
+<div id="cartModal" class="modal-overlay">
+  <div class="modal-header">
+    <button class="back-btn" onclick="closeModal('cartModal')"><span>&#8592;</span> Continue Shopping</button>
+    <h2 style="margin:0; font-size:20px;">Your Cart</h2>
+  </div>
+  <div id="cartSection">
+    <div id="cartItemsList"></div>
+    <h3 style="text-align: right; color: #ff4757; margin-top: 20px;" id="cartTotalDisplay">Total: 0 BDT</h3>
+    <button class="btn btn-buy" style="width:100%; margin-top:10px;" onclick="checkoutFromCart()">Proceed to Checkout</button>
+  </div>
+</div>
+
+<script>
+  // Product Database
+  const products = [
+    { 
+      title: "Levi Ackerman Premium T-Shirt", type: "T-Shirt", price: 550, 
+      images: ["https://i.ibb.co.com/MyM31b5V/657271574-122177027318743567-3520612459997123059-n.jpg"],
+      description: "High-quality comfortable cotton T-shirt featuring Levi Ackerman from Attack on Titan. DTF print ensures long-lasting colors.",
+      reviews: { rating: 4.3, count: 24 }
+    },
+    { 
+      title: "Eren & Mikasa T-shirt", type: "T-Shirt", price: 550, 
+      images: ["https://i.ibb.co.com/Ldk79TJ1/657387702-122177027186743567-410346096309257837-n.jpg"],
+      description: "Premium couple/duo design T-shirt. Eren Yeager & Mikasa Ackerman cotton t-shirt. Soft fabric, perfect for daily wear.",
+      reviews: { rating: 4.8, count: 15 }
+    },
+    { 
+      title: "Roronoa Zoro 10 piece Combo Wallmate", type: "Wall Mate", price: 399, 
+      images: ["https://i.ibb.co.com/N2RX7s2c/42610354760.png", "https://i.ibb.co.com/N2RX7s2c/42610354760.png"],
+      description: "Decorate your room with the ultimate Zoro wallmate combo. Comes with double-sided tape for easy setup.",
+      reviews: { rating: 4.5, count: 42 }
+    }
+  ];
+
+  let currentCategory = 'all';
+  let currentP = null;
+  let cart = [];
+
+  function renderGrid(data) {
+    const grid = document.getElementById('productGrid');
+    grid.innerHTML = data.map(p => {
+      let starsHtml = '&#9733;'.repeat(Math.floor(p.reviews.rating)) + '&#9734;'.repeat(5 - Math.floor(p.reviews.rating));
+      return `
+      <div class="product-card" onclick='openModal(${JSON.stringify(p).replace(/"/g, "&quot;")})'>
+        <img src="${p.images[0]}" alt="${p.title}">
+        <div class="product-info">
+          <h3>${p.title}</h3>
+          <div class="stars">${starsHtml} (${p.reviews.count})</div>
+          <p class="price">${p.price} BDT</p>
+        </div>
+      </div>
+    `}).join('');
+  }
+
+  function filterProducts() {
+    const term = document.getElementById('searchBar').value.toLowerCase();
+    renderGrid(products.filter(p => (currentCategory === 'all' || p.type === currentCategory) && p.title.toLowerCase().includes(term)));
+  }
+
+  function setCategory(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentCategory = cat;
+    filterProducts();
+  }
+
+  function openModal(p) {
+    currentP = p;
+    document.getElementById('productModal').style.display = 'block';
+    document.getElementById('orderFormSection').style.display = 'none';
+    document.getElementById('productDetailView').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    // Set Data
+    document.getElementById('mainSliderImg').src = p.images[0];
+    document.getElementById('modalTitle').innerText = p.title;
+    document.getElementById('modalDesc').innerText = p.description;
+    document.getElementById('modalReviews').innerHTML = `&#9733;`.repeat(Math.floor(p.reviews.rating)) + ` (${p.reviews.count} Reviews)`;
+
+    // Thumbnails
+    const thumbs = document.getElementById('thumbnailRow');
+    thumbs.innerHTML = p.images.map((img, i) => 
+      `<img src="${img}" class="${i===0?'active':''}" onclick="changeMainImage('${img}', this)">`
+    ).join('');
+
+    // Size Selection
+    const sizeSelect = document.getElementById('sizeSelect');
+    if(p.type === 'Wall Mate') {
+        sizeSelect.innerHTML = '<option value="4x6">4x6 Inch (399 BDT)</option><option value="8x8">8x8 Inch (699 BDT)</option>';
+    } else {
+        sizeSelect.innerHTML = '<option value="M">M</option><option value="L">L</option><option value="XL">XL</option>';
+    }
+    
+    updateViewPrice();
+  }
+
+  function changeMainImage(src, element) {
+    document.getElementById('mainSliderImg').src = src;
+    document.querySelectorAll('#thumbnailRow img').forEach(img => img.classList.remove('active'));
+    element.classList.add('active');
+  }
+
+  function updateViewPrice() {
+    let price = currentP.price;
+    if (currentP.type === 'Wall Mate' && document.getElementById('sizeSelect').value === '8x8') price = 699;
+    document.getElementById('modalPrice').innerText = price + " BDT";
+    return price;
+  }
+
+  /* Cart Logic */
+  function addToCart() {
+    const size = document.getElementById('sizeSelect').value;
+    const price = updateViewPrice();
+    cart.push({ title: currentP.title, size: size, price: price });
+    updateCartCount();
+    alert("Item added to cart!");
+    closeModal('productModal');
+  }
+
+  function updateCartCount() {
+    document.getElementById('cartCount').innerText = cart.length;
+  }
+
+  function openCart() {
+    document.getElementById('cartModal').style.display = 'block';
+    document.getElementById('cartSection').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    
+    const list = document.getElementById('cartItemsList');
+    if (cart.length === 0) {
+      list.innerHTML = "<p style='text-align:center;'>Your cart is empty.</p>";
+      document.getElementById('cartTotalDisplay').innerText = "Total: 0 BDT";
+      return;
+    }
+
+    let total = 0;
+    list.innerHTML = cart.map((item, index) => {
+      total += item.price;
+      return `<div class="cart-item">
+                <p><b>${item.title}</b> (Size: ${item.size}) <br> <small>${item.price} BDT</small></p>
+                <span class="remove-btn" onclick="removeFromCart(${index})">X Remove</span>
+              </div>`;
+    }).join('');
+    document.getElementById('cartTotalDisplay').innerText = `Subtotal: ${total} BDT`;
+  }
+
+  function removeFromCart(index) {
+    cart.splice(index, 1);
+    updateCartCount();
+    openCart();
+  }
+
+  /* Checkout Form Logic */
+  let isCartCheckout = false;
+  let baseCheckoutTotal = 0;
+
+  function showOrderForm(fromCart) {
+    isCartCheckout = fromCart;
+    baseCheckoutTotal = 0;
+    let itemsString = "";
+
+    if (fromCart) {
+      if(cart.length === 0) return alert("Cart is empty!");
+      cart.forEach(item => { baseCheckoutTotal += item.price; itemsString += `${item.title} (${item.size}), `; });
+      document.getElementById('cartModal').style.display = 'none';
+      document.getElementById('productModal').style.display = 'block';
+    } else {
+      baseCheckoutTotal = updateViewPrice();
+      itemsString = `${currentP.title} (${document.getElementById('sizeSelect').value})`;
+    }
+
+    document.getElementById('productDetailView').style.display = 'none';
+    document.getElementById('orderFormSection').style.display = 'block';
+    document.getElementById('finalProdName').value = itemsString;
+    document.getElementById('paymentMethod').value = 'Cash on Delivery'; // Default
+    document.getElementById('deliveryLocation').value = 'Narayanganj'; // Default
+    togglePaymentBox(); 
+  }
+
+  function checkoutFromCart() { showOrderForm(true); }
+
+  // ডেলিভারি এরিয়া এবং পেমেন্ট মেথড অনুযায়ী নতুন ক্যালকুলেশন লজিক
+  function togglePaymentBox() {
+    const method = document.getElementById('paymentMethod').value;
+    const location = document.getElementById('deliveryLocation').value;
+    const bkashNagadSection = document.getElementById('bkashNagadSection');
+    
+    let finalTotal = baseCheckoutTotal;
+
+    // ১. নতুন ডেলিভারি ফি লজিক
+    if (location === 'Narayanganj') {
+      finalTotal += 60;
+    } else if (location === 'Dhaka') {
+      finalTotal += 115;
+    } else if (location === 'Other Districts') {
+      finalTotal += 135;
+    }
+
+    // ২. পেমেন্ট মেথড লজিক
+    if (method === 'Pre-payment') {
+      bkashNagadSection.style.display = 'block';
+    } else {
+      bkashNagadSection.style.display = 'none';
+      finalTotal += 20; // COD চার্জ
+    }
+
+    document.getElementById('checkoutTotalDisplay').innerText = `Total: ${finalTotal} BDT`;
+    document.getElementById('finalPriceInput').value = finalTotal + " BDT";
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).style.display = 'none';
+    document.body.style.overflow = 'auto';
+  }
+
+  // Initialize
+  renderGrid(products);
+</script>
+</body>
+</html>
