@@ -3,394 +3,1389 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Triple A - Shop</title>
+  <title>Triple A - Anime Streaming</title>
   <style>
-    body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f4; color: #333; }
-    
-    /* Header & Theme */
-    .header-container { background-color: #0b0b0b; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; color: white; border-bottom: 2px solid #ff4757; position: sticky; top: 0; z-index: 100; }
-    .header-container h1 { margin: 0; color: #ff4757; text-transform: uppercase; letter-spacing: 2px; }
-    .cart-btn { background: #ff4757; color: white; border: none; padding: 10px 20px; border-radius: 25px; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.3s; }
-    .cart-btn:hover { background: #e84118; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #0b0b0b;
+      color: #ffffff;
+      padding: 20px;
+      box-sizing: border-box;
+    }
 
-    /* Search Bar */
-    .search-container { max-width: 600px; margin: 20px auto; padding: 0 20px; }
-    #searchBar { width: 100%; padding: 12px 20px; border-radius: 30px; border: 1px solid #ddd; font-size: 16px; outline: none; box-sizing: border-box; }
-    #searchBar:focus { border-color: #ff4757; }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      margin-top: 20px;
+    }
 
-    /* Category Filters */
-    .filter-container { text-align: center; margin-bottom: 20px; }
-    .filter-btn { background: white; color: #333; border: 1px solid #ddd; padding: 8px 20px; cursor: pointer; border-radius: 20px; margin: 5px; font-weight: bold; transition: 0.3s; }
-    .filter-btn:hover, .filter-btn.active { background: #ff4757; color: white; border-color: #ff4757; }
+    header h1 {
+      font-size: 36px;
+      color: #ff4757;
+      margin: 0 0 15px 0;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      text-shadow: 0 0 10px rgba(255, 71, 87, 0.3);
+    }
 
-    /* Product Grid */
-    .main-wrapper { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
-    .product-card { background: white; border-radius: 8px; overflow: hidden; cursor: pointer; transition: 0.2s; border: 1px solid #eee; }
-    .product-card:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); border-color: #ff4757; }
-    .product-card img { width: 100%; height: 250px; object-fit: cover; }
-    .product-info { padding: 15px; }
-    .product-info h3 { margin: 0 0 5px 0; font-size: 16px; color: #222; }
-    .product-info .price { margin: 0; font-size: 18px; color: #ff4757; font-weight: bold; }
-    .stars { color: #f39c12; font-size: 14px; margin-bottom: 5px; }
+    .search-container {
+      max-width: 500px;
+      margin: 0 auto;
+    }
 
-    /* Fullscreen Modal */
-    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; z-index: 1000; overflow-y: auto; }
-    .modal-header { padding: 15px 20px; background: #fff; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; }
-    .back-btn { background: transparent; color: #333; border: none; font-size: 18px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; }
-    .back-btn:hover { color: #ff4757; }
+    #searchBar {
+      width: 100%;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 25px;
+      background-color: #1e1e1e;
+      color: white;
+      font-size: 16px;
+      outline: none;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
 
-    /* Daraz Style Product View */
-    .product-view-container { display: flex; flex-wrap: wrap; max-width: 1000px; margin: 20px auto; padding: 20px; gap: 40px; }
-    .image-gallery { flex: 1; min-width: 300px; }
-    .main-image { width: 100%; height: 400px; object-fit: contain; border: 1px solid #eee; border-radius: 8px; margin-bottom: 10px; background: #fafafa; }
-    .thumbnail-row { display: flex; gap: 10px; overflow-x: auto; }
-    .thumbnail-row img { width: 60px; height: 60px; object-fit: cover; border: 2px solid transparent; border-radius: 4px; cursor: pointer; transition: 0.2s; }
-    .thumbnail-row img:hover, .thumbnail-row img.active { border-color: #ff4757; }
+    /* Video Player Section */
+    .player-section {
+      max-width: 900px;
+      margin: 30px auto;
+      display: none;
+    }
 
-    .product-details { flex: 1; min-width: 300px; text-align: left; }
-    .product-details h2 { margin: 0 0 10px 0; font-size: 24px; }
-    .product-details .price { font-size: 28px; color: #ff4757; font-weight: bold; margin: 10px 0; }
-    .product-details .desc { color: #666; font-size: 15px; line-height: 1.5; margin-bottom: 20px; }
-    
-    .action-btns { display: flex; gap: 10px; margin-top: 20px; }
-    .btn { padding: 12px 20px; font-size: 16px; font-weight: bold; border: none; cursor: pointer; border-radius: 5px; transition: 0.3s; flex: 1; text-align: center; }
-    .btn-cart { background: #f0932b; color: white; }
-    .btn-cart:hover { background: #e58e26; }
-    .btn-buy { background: #ff4757; color: white; }
-    .btn-buy:hover { background: #e84118; }
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      background-color: #000;
+      border-radius: 8px;
+      overflow: hidden;
+    }
 
-    /* Forms & Cart Modal */
-    #orderFormSection, #cartSection { display: none; max-width: 600px; margin: 20px auto; padding: 20px; background: #f9f9f9; border-radius: 8px; border: 1px solid #ddd; }
-    .form-group { margin-bottom: 15px; }
-    .form-group label { display: block; font-weight: bold; margin-bottom: 5px; color: #333; }
-    input, select, textarea { width: 100%; padding: 10px; background: #fff; border: 1px solid #ccc; border-radius: 5px; font-size: 15px; box-sizing: border-box; outline: none; }
-    input:focus, select:focus, textarea:focus { border-color: #ff4757; }
-    
-    /* Pre-payment Box */
-    .payment-box { background: #e8f6f3; border: 1px solid #1abc9c; padding: 15px; border-radius: 5px; margin-top: 10px; display: none; }
-    .payment-box p { margin: 0 0 10px 0; font-size: 14px; color: #16a085; font-weight: bold; }
+    .video-wrapper video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
 
-    /* Cart Items */
-    .cart-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #ddd; }
-    .cart-item p { margin: 0; }
-    .remove-btn { color: red; cursor: pointer; font-size: 14px; font-weight: bold; }
+    .controls-container {
+      margin-top: 15px;
+      display: flex;
+      gap: 15px;
+      background-color: #141414;
+      padding: 15px;
+      border-radius: 8px;
+      flex-wrap: wrap;
+    }
+
+    select {
+      padding: 10px 15px;
+      background-color: #222;
+      color: white;
+      border: 1px solid #333;
+      border-radius: 5px;
+      cursor: pointer;
+      flex: 1;
+      min-width: 150px;
+    }
+
+    /* Anime Grid */
+    .main-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .anime-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 30px;
+    }
+
+    .anime-card {
+      background-color: #141414;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+    }
+
+    .anime-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(255, 71, 87, 0.2);
+    }
+
+    .anime-card img {
+      width: 100%;
+      height: 280px;
+      object-fit: cover;
+    }
+
+    .anime-info {
+      padding: 15px;
+    }
+
+    .anime-info h3 {
+      margin: 0 0 10px 0;
+      font-size: 16px;
+    }
+
+    .anime-info p {
+      margin: 0;
+      font-size: 14px;
+      color: #888;
+    }
   </style>
 </head>
 <body>
 
-<div class="header-container">
-  <h1>Triple A</h1>
-  <button class="cart-btn" onclick="openCart()">🛒 Cart (<span id="cartCount">0</span>)</button>
-</div>
-
-<div class="search-container">
-  <input type="text" id="searchBar" placeholder="Search products..." onkeyup="filterProducts()">
-</div>
-
-<div class="filter-container">
-  <button class="filter-btn active" onclick="setCategory('all', this)">All</button>
-  <button class="filter-btn" onclick="setCategory('T-Shirt', this)">T-Shirts</button>
-  <button class="filter-btn" onclick="setCategory('Wall Mate', this)">Wallmates</button>
-</div>
-
-<div class="main-wrapper">
-  <div id="productGrid" class="product-grid"></div>
-</div>
-
-<!-- Product View Modal -->
-<div id="productModal" class="modal-overlay">
-  <div class="modal-header">
-    <button class="back-btn" onclick="closeModal('productModal')"><span>&#8592;</span> Back</button>
-  </div>
-  
-  <div class="product-view-container" id="productDetailView">
-    <div class="image-gallery">
-      <img id="mainSliderImg" class="main-image" src="">
-      <div class="thumbnail-row" id="thumbnailRow"></div>
+  <header>
+    <h1>Triple A</h1>
+    <div class="search-container">
+      <input type="text" id="searchBar" placeholder="Search your favorite anime...">
     </div>
-    
-    <div class="product-details">
-      <h2 id="modalTitle">Product Title</h2>
-      <div class="stars" id="modalReviews">&#9733;&#9733;&#9733;&#9733;&#9734; (0 Reviews)</div>
-      <p class="price" id="modalPrice">0 BDT</p>
-      <p class="desc" id="modalDesc">Product description goes here.</p>
+  </header>
 
-      <div class="form-group" id="sizeGroup">
-        <label id="sizeLabel">Select Size</label>
-        <select id="sizeSelect" onchange="updateViewPrice()"></select>
-      </div>
-
-      <div class="action-btns">
-        <button class="btn btn-cart" onclick="addToCart()">Add to Cart</button>
-        <button class="btn btn-buy" onclick="showOrderForm(false)">Buy Now</button>
-      </div>
+  <div class="player-section" id="playerSection">
+    <h2 id="playingTitle" style="color: #ff4757;">Now Playing</h2>
+    <div class="video-wrapper">
+      <video id="videoPlayer" controls preload="metadata"></video>
+<track id="videoTrack" kind="subtitles" srclang="en" label="English">
+    আপনার ব্রাউজার ভিডিও ট্যাগ সাপোর্ট করে না।
+  </video>
+    </div>
+    <div class="controls-container">
+      <select id="seasonSelect"><option>Select Season</option></select>
+      <select id="languageSelect"><option>Select Language</option></select>
+      <select id="episodeSelect"><option>Select Episode</option></select>
     </div>
   </div>
 
-  <!-- Order Form -->
-  <div id="orderFormSection">
-    <h3 style="text-align: center; border-bottom: 2px solid #ddd; padding-bottom: 10px;">Checkout Details</h3>
-    <form action="https://formspree.io/f/mnjkaokz" method="POST" id="checkoutForm">
-      <input type="hidden" name="Order_Items" id="finalProdName">
-      <input type="hidden" name="Total_Price" id="finalPriceInput">
-      
-      <div class="form-group"><label>Your Name</label><input type="text" name="Name" required></div>
-      <div class="form-group"><label>Phone Number</label><input type="text" name="Phone" required></div>
-      <div class="form-group"><label>Delivery Address</label><textarea name="Address" rows="3" required></textarea></div>
-      
-      <!-- নতুন নিয়মে Delivery Area আপডেট করা হয়েছে -->
-      <div class="form-group">
-        <label>Delivery Area</label>
-        <select id="deliveryLocation" name="Delivery_Location" onchange="togglePaymentBox()">
-          <option value="Narayanganj">Narayanganj (60 BDT)</option>
-          <option value="Dhaka">Dhaka (115 BDT)</option>
-          <option value="Other Districts">Other Districts / Rest of Bangladesh (135 BDT)</option>
-        </select>
-      </div>
+  <main class="main-container">
+    <div class="anime-grid" id="animeGrid"></div>
+  </main>
 
-      <div class="form-group">
-        <label>Payment Method</label>
-        <select id="paymentMethod" name="Payment_Method" onchange="togglePaymentBox()">
-          <option value="Cash on Delivery">Cash on Delivery (+20 BDT)</option>
-          <option value="Pre-payment">Pre-payment (bKash/Nagad)</option>
-        </select>
-      </div>
-      
-      <div class="payment-box" id="bkashNagadSection">
-        <p>Send Total Amount to: <strong>01621939397 (bKash/Nagad Personal)</strong></p>
-        <select name="Paid_Via" style="margin-bottom: 10px;">
-          <option value="bKash">bKash</option>
-          <option value="Nagad">Nagad</option>
-        </select>
-        <input type="text" name="TrxID" placeholder="Enter Transaction ID (TrxID)">
-      </div>
-      
-      <h3 style="text-align: right; color: #ff4757;" id="checkoutTotalDisplay">Total: 0 BDT</h3>
-      <button type="submit" class="btn btn-buy" style="width:100%;">Confirm Order</button>
-    </form>
-  </div>
-</div>
-
-<!-- Cart Modal -->
-<div id="cartModal" class="modal-overlay">
-  <div class="modal-header">
-    <button class="back-btn" onclick="closeModal('cartModal')"><span>&#8592;</span> Continue Shopping</button>
-    <h2 style="margin:0; font-size:20px;">Your Cart</h2>
-  </div>
-  <div id="cartSection">
-    <div id="cartItemsList"></div>
-    <h3 style="text-align: right; color: #ff4757; margin-top: 20px;" id="cartTotalDisplay">Total: 0 BDT</h3>
-    <button class="btn btn-buy" style="width:100%; margin-top:10px;" onclick="checkoutFromCart()">Proceed to Checkout</button>
-  </div>
-</div>
-
-<script>
-  // Product Database
-  const products = [
-    { 
-      title: "Levi Ackerman Premium T-Shirt", type: "T-Shirt", price: 550, 
-      images: ["https://i.ibb.co.com/MyM31b5V/657271574-122177027318743567-3520612459997123059-n.jpg"],
-      description: "High-quality comfortable cotton T-shirt featuring Levi Ackerman from Attack on Titan. DTF print ensures long-lasting colors.",
-      reviews: { rating: 4.3, count: 24 }
-    },
-    { 
-      title: "Eren & Mikasa T-shirt", type: "T-Shirt", price: 550, 
-      images: ["https://i.ibb.co.com/Ldk79TJ1/657387702-122177027186743567-410346096309257837-n.jpg"],
-      description: "Premium couple/duo design T-shirt. Eren Yeager & Mikasa Ackerman cotton t-shirt. Soft fabric, perfect for daily wear.",
-      reviews: { rating: 4.8, count: 15 }
-    },
-    { 
-      title: "Roronoa Zoro 10 piece Combo Wallmate", type: "Wall Mate", price: 399, 
-      images: ["https://i.ibb.co.com/N2RX7s2c/42610354760.png", "https://i.ibb.co.com/N2RX7s2c/42610354760.png"],
-      description: "Decorate your room with the ultimate Zoro wallmate combo. Comes with double-sided tape for easy setup.",
-      reviews: { rating: 4.5, count: 42 }
-    }
-  ];
-
-  let currentCategory = 'all';
-  let currentP = null;
-  let cart = [];
-
-  function renderGrid(data) {
-    const grid = document.getElementById('productGrid');
-    grid.innerHTML = data.map(p => {
-      let starsHtml = '&#9733;'.repeat(Math.floor(p.reviews.rating)) + '&#9734;'.repeat(5 - Math.floor(p.reviews.rating));
-      return `
-      <div class="product-card" onclick='openModal(${JSON.stringify(p).replace(/"/g, "&quot;")})'>
-        <img src="${p.images[0]}" alt="${p.title}">
-        <div class="product-info">
-          <h3>${p.title}</h3>
-          <div class="stars">${starsHtml} (${p.reviews.count})</div>
-          <p class="price">${p.price} BDT</p>
-        </div>
-      </div>
-    `}).join('');
-  }
-
-  function filterProducts() {
-    const term = document.getElementById('searchBar').value.toLowerCase();
-    renderGrid(products.filter(p => (currentCategory === 'all' || p.type === currentCategory) && p.title.toLowerCase().includes(term)));
-  }
-
-  function setCategory(cat, btn) {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentCategory = cat;
-    filterProducts();
-  }
-
-  function openModal(p) {
-    currentP = p;
-    document.getElementById('productModal').style.display = 'block';
-    document.getElementById('orderFormSection').style.display = 'none';
-    document.getElementById('productDetailView').style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-
-    // Set Data
-    document.getElementById('mainSliderImg').src = p.images[0];
-    document.getElementById('modalTitle').innerText = p.title;
-    document.getElementById('modalDesc').innerText = p.description;
-    document.getElementById('modalReviews').innerHTML = `&#9733;`.repeat(Math.floor(p.reviews.rating)) + ` (${p.reviews.count} Reviews)`;
-
-    // Thumbnails
-    const thumbs = document.getElementById('thumbnailRow');
-    thumbs.innerHTML = p.images.map((img, i) => 
-      `<img src="${img}" class="${i===0?'active':''}" onclick="changeMainImage('${img}', this)">`
-    ).join('');
-
-    // Size Selection
-    const sizeSelect = document.getElementById('sizeSelect');
-    if(p.type === 'Wall Mate') {
-        sizeSelect.innerHTML = '<option value="4x6">4x6 Inch (399 BDT)</option><option value="8x8">8x8 Inch (699 BDT)</option>';
-    } else {
-        sizeSelect.innerHTML = '<option value="M">M</option><option value="L">L</option><option value="XL">XL</option>';
-    }
+  <script>
+    // --- MULTIPLE ADSTERRA CONFIGURATION ---
+    const adsterraUrls = [
+      "https://www.effectivecpmnetwork.com/r3aadvq5n?key=4f49c5bb988eb130851d18b450f7c1b3",
+      "https://www.effectivecpmnetwork.com/d6n7xxmrx?key=7e8089f1a57bb1078c07b812ca5944ea",
+      "https://www.effectivecpmnetwork.com/d52cgmru?key=6459a4c497cc19f22400c0e8ba9a9bc5"
+    ]; 
     
-    updateViewPrice();
-  }
+    let currentAdIndex = 0;
+    let adTimer = null;
 
-  function changeMainImage(src, element) {
-    document.getElementById('mainSliderImg').src = src;
-    document.querySelectorAll('#thumbnailRow img').forEach(img => img.classList.remove('active'));
-    element.classList.add('active');
-  }
+    const animeData = {
+      "Death Note": {
+        "info": { "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnsx5G5rprTwWKmqLxJQEHZxwCoynDvMdGmg&s", "rating": "9.0" },
+        "Season 1": {
+          "Original Audio": {
+"Episode 1": "https://archive.org/download/death-note-s-1-e-1-720-p/Death%20Note-S1E1-720P.mp4",
+            "Episode 2": "https://archive.org/download/death-note-s-1-e-2-720-p/Death%20Note-S1E2-720P.mp4",
+            "Episode 3": "https://archive.org/download/death-note-s-1-e-14-720-p/Death%20Note-S1E3-720P.mp4",
+            "Episode 4": "https://archive.org/download/death-note-s-1-e-14-720-p/Death%20Note-S1E4-720P.mp4",
+            "Episode 5": "https://archive.org/download/death-note-s-1-e-14-720-p/Death%20Note-S1E5-720P.mp4",
+            "Episode 6": "https://archive.org/download/death-note-s-1-e-14-720-p/Death%20Note-S1E6-720P.mp4",
+            "Episode 7": "https://archive.org/download/death-note-s-1-e-14-720-p/Death%20Note-S1E7-720P.mp4",
+            "Episode 8": "https://archive.org/download/death-note-s-1-e-14-720-p/Death%20Note-S1E8-720P.mp4",
+            "Episode 9": "https://archive.org/download/death-note-s-1-e-14-720-p/Death%20Note-S1E9-720P.mp4",
+            "Episode 10": "https://archive.org/download/death-note-s-1-e-10-720-p/Death%20Note-S1E10-720P.mp4",
+            "Episode 11": "https://archive.org/download/death-note-s-1-e-10-720-p/Death%20Note-S1E11-720P.mp4",
+            "Episode 12": "https://archive.org/download/death-note-s-1-e-10-720-p/Death%20Note-S1E12-720P.mp4",
+            "Episode 13": "https://archive.org/download/death-note-s-1-e-14-720-p_202605/Death%20Note-S1E13-720P.mp4",
+            "Episode 14": "https://archive.org/download/death-note-s-1-e-14-720-p_202605/Death%20Note-S1E14-720P.mp4",
+            "Episode 15": "https://archive.org/download/death-note-s-1-e-14-720-p_202605/Death%20Note-S1E15-720P.mp4",
+            "Episode 16": "https://archive.org/download/death-note-s-1-e-14-720-p_202605/Death%20Note-S1E16-720P.mp4",
+            "Episode 17": "https://archive.org/download/death-note-s-1-e-17-720-p/Death%20Note-S1E17-720P.mp4",
+            "Episode 18": "https://archive.org/download/death-note-s-1-e-17-720-p/Death%20Note-S1E18-720P.mp4",
+            "Episode 19": "https://archive.org/download/death-note-s-1-e-17-720-p/Death%20Note-S1E19-720P.mp4",
+            "Episode 20": "https://archive.org/download/death-note-s-1-e-17-720-p/Death%20Note-S1E20-720P.mp4",
+            "Episode 21": "https://archive.org/download/death-note-s-1-e-25-720-p/Death%20Note-S1E21-720P.mp4",
+            "Episode 22": "https://archive.org/download/death-note-s-1-e-25-720-p/Death%20Note-S1E22-720P.mp4",
+            "Episode 23": "https://archive.org/download/death-note-s-1-e-25-720-p/Death%20Note-S1E23-720P.mp4",
+            "Episode 24": "https://archive.org/download/death-note-s-1-e-25-720-p/Death%20Note-S1E24-720P.mp4",
+            "Episode 25": "https://archive.org/download/death-note-s-1-e-25-720-p/Death%20Note-S1E25-720P.mp4",
+            "Episode 26": "https://archive.org/download/death-note-s-1-e-25-720-p/Death%20Note-S1E26-720P.mp4",
+            "Episode 27": "https://archive.org/download/death-note-s-1-e-25-720-p/Death%20Note-S1E27-720P.mp4",
+            "Episode 28": "https://archive.org/download/death-note-s-1-e-25-720-p/Death%20Note-S1E28-720P.mp4",
+            "Episode 29": "https://archive.org/download/death-note-s-1-e-25-720-p/Death%20Note-S1E29-480P.mp4",
+            "Episode 30": "https://archive.org/download/death-note-s-1-e-25-720-p/Death%20Note-S1E30-480P.mp4",
+            "Episode 31": "https://archive.org/download/death-note-s-1-e-25-720-p/Death%20Note-S1E31-720P.mp4",
+            "Episode 32": "https://archive.org/download/death-note-s-1-e-25-720-p/Death%20Note-S1E32-480P.mp4",
+            "Episode 33": "https://archive.org/download/death-note-s-1-e-25-720-p/Death%20Note-S1E33-720P.mp4",
+            "Episode 34": "https://archive.org/download/death-note-s-1-e-25-720-p/Death%20Note-S1E34-720P.mp4",
+            "Episode 35": "https://archive.org/download/death-note-s-1-e-25-720-p/Death%20Note-S1E35-720P.mp4", 
+            "Episode 36": "https://archive.org/download/death-note-s-1-e-25-720-p/Death%20Note-S1E36-720P.mp4",
+            "Episode 37": "https://archive.org/download/death-note-s-1-e-25-720-p/Death%20Note-S1E37-720P.mp4"
+          },
+          "Hindi Dub": {
+            "Episode 1": "https://archive.org/download/death-note-hindi-s-1-e-35-480-p/Death%20Note%20%5BHindi%5D-S1E1-480P.mp4",
+            "Episode 2": "https://archive.org/download/death-note-hindi-s-1-e-35-480-p/Death%20Note%20%5BHindi%5D-S1E2-480P.mp4",
+            "Episode 3": "https://archive.org/download/death-note-hindi-s-1-e-35-480-p/Death%20Note%20%5BHindi%5D-S1E3-480P.mp4",
+            "Episode 4": "https://archive.org/download/death-note-hindi-s-1-e-35-480-p/Death%20Note%20%5BHindi%5D-S1E4-480P.mp4",
+            "Episode 5": "https://archive.org/download/death-note-hindi-s-1-e-35-480-p/Death%20Note%20%5BHindi%5D-S1E5-480P.mp4",
+            "Episode 6": "https://archive.org/download/death-note-hindi-s-1-e-35-480-p/Death%20Note%20%5BHindi%5D-S1E6-480P.mp4",
+            "Episode 7": "https://archive.org/download/death-note-hindi-s-1-e-35-480-p/Death%20Note%20%5BHindi%5D-S1E7-480P.mp4",
+            "Episode 8": "https://archive.org/download/death-note-hindi-s-1-e-35-480-p/Death%20Note%20%5BHindi%5D-S1E8-480P.mp4",
+            "Episode 9": "https://archive.org/download/death-note-hindi-s-1-e-35-480-p/Death%20Note%20%5BHindi%5D-S1E9-480P.mp4",
+            "Episode 10": "https://archive.org/download/death-note-hindi-s-1-e-35-480-p/Death%20Note%20%5BHindi%5D-S1E10-480P.mp4",
+            "Episode 11": "https://archive.org/download/death-note-hindi-s-1-e-35-480-p/Death%20Note%20%5BHindi%5D-S1E11-480P.mp4",
+            "Episode 12": "https://archive.org/download/death-note-hindi-s-1-e-35-480-p/Death%20Note%20%5BHindi%5D-S1E12-480P.mp4",
+            "Episode 13": "https://archive.org/download/death-note-hindi-s-1-e-35-480-p/Death%20Note%20%5BHindi%5D-S1E13-480P.mp4",
+            "Episode 14": "https://archive.org/download/death-note-hindi-s-1-e-35-480-p/Death%20Note%20%5BHindi%5D-S1E14-480P.mp4",
+            "Episode 15": "https://archive.org/download/death-note-hindi-s-1-e-35-480-p/Death%20Note%20%5BHindi%5D-S1E15-480P.mp4",
+            "Episode 16": "https://archive.org/download/death-note-hindi-s-1-e-35-480-p/Death%20Note%20%5BHindi%5D-S1E16-480P.mp4",
+            "Episode 17": "https://archive.org/download/death-note-hindi-s-1-e-35-480-p/Death%20Note%20%5BHindi%5D-S1E17-480P.mp4",
+            "Episode 18": "https://archive.org/download/death-note-hindi-s-1-e-35-480-p/Death%20Note%20%5BHindi%5D-S1E18-480P.mp4",
+            "Episode 19": "https://archive.org/download/death-note-hindi-s-1-e-35-480-p/Death%20Note%20%5BHindi%5D-S1E19-480P.mp4",
+            "Episode 20": "https://archive.org/download/death-note-hindi-s-1-e-35-480-p/Death%20Note%20%5BHindi%5D-S1E20-480P.mp4",
+            "Episode 21": "https://archive.org/download/death-note-hindi-s-1-e-35-480-p/Death%20Note%20%5BHindi%5D-S1E21-480P.mp4",
+            "Episode 22": "https://archive.org/download/death-note-hindi-s-1-e-35-480-p/Death%20Note%20%5BHindi%5D-S1E22-480P.mp4",
+            "Episode 23": "https://archive.org/download/death-note-hindi-s-1-e-35-480-p/Death%20Note%20%5BHindi%5D-S1E23-480P.mp4",
+            "Episode 24": "https://archive.org/download/death-note-hindi-s-1-e-35-480-p/Death%20Note%20%5BHindi%5D-S1E24-480P.mp4",
+            "Episode 25": "https://archive.org/download/death-note-hindi-s-1-e-35-480-p/Death%20Note%20%5BHindi%5D-S1E25-480P.mp4",
+            "Episode 26": "https://archive.org/download/death-note-hindi-s-1-e-35-480-p/Death%20Note%20%5BHindi%5D-S1E26-480P.mp4",
+            "Episode 27": "https://archive.org/download/death-note-hindi-s-1-e-28-480-p/Death%20Note%20%5BHindi%5D-S1E27-480P.mp4",
+            "Episode 28": "https://archive.org/download/death-note-hindi-s-1-e-28-480-p/Death%20Note%20%5BHindi%5D-S1E28-480P.mp4",
+            "Episode 29": "https://archive.org/download/mp-4-2_202605/Death%20Note%20%5BHindi%5D-S1E29-480P.mp4",
+            "Episode 30": "https://archive.org/download/mp-4-2_202605/Death%20Note%20%5BHindi%5D-S1E30-480P.mp4",
+            "Episode 31": "https://archive.org/download/mp-4-2_202605/Death%20Note%20%5BHindi%5D-S1E31-480P.mp4",
+            "Episode 32": "https://archive.org/download/mp-4-2_202605/Death%20Note%20%5BHindi%5D-S1E32-480P.mp4",
+            "Episode 33": "link",
+            "Episode 34": "link",
+            "Episode 35": "link",
+            "Episode 36": "link",
+            "Episode 37": "link"
+          },
+          "English Dub": {
+            "Episode 1": "https://archive.org/download/death-note-english-s-1-e-4-480-p/Death%20Note%20%5BEnglish%5D-S1E1-480P.mp4",
+            "Episode 2": "https://archive.org/download/death-note-english-s-1-e-4-480-p/Death%20Note%20%5BEnglish%5D-S1E2-480P.mp4",
+            "Episode 3": "https://archive.org/download/death-note-english-s-1-e-4-480-p/Death%20Note%20%5BEnglish%5D-S1E3-480P.mp4",
+            "Episode 4": "https://archive.org/download/death-note-english-s-1-e-4-480-p/Death%20Note%20%5BEnglish%5D-S1E4-480P.mp4",
+            "Episode 5": "https://archive.org/download/death-note-english-s-1-e-11-480-p/Death%20Note%20%5BEnglish%5D-S1E5-480P.mp4",
+            "Episode 6": "https://archive.org/download/death-note-english-s-1-e-11-480-p/Death%20Note%20%5BEnglish%5D-S1E6-480P.mp4",
+            "Episode 7": "https://archive.org/download/death-note-english-s-1-e-11-480-p/Death%20Note%20%5BEnglish%5D-S1E7-480P.mp4",
+            "Episode 8": "https://archive.org/download/death-note-english-s-1-e-11-480-p/Death%20Note%20%5BEnglish%5D-S1E8-480P.mp4",
+            "Episode 9": "https://archive.org/download/death-note-english-s-1-e-11-480-p/Death%20Note%20%5BEnglish%5D-S1E9-480P.mp4",
+            "Episode 10": "https://archive.org/download/death-note-english-s-1-e-11-480-p/Death%20Note%20%5BEnglish%5D-S1E10-480P.mp4",
+            "Episode 11": "https://archive.org/download/death-note-english-s-1-e-11-480-p/Death%20Note%20%5BEnglish%5D-S1E11-480P.mp4",
+            "Episode 12": "https://archive.org/download/death-note-english-s-1-e-11-480-p/Death%20Note%20%5BEnglish%5D-S1E12-480P.mp4",
+            "Episode 13": "https://archive.org/download/death-note-english-s-1-e-14-480-p/Death%20Note%20%5BEnglish%5D-S1E13-480P.mp4",
+            "Episode 14": "https://archive.org/download/death-note-english-s-1-e-14-480-p/Death%20Note%20%5BEnglish%5D-S1E14-480P.mp4",
+            "Episode 15": "https://archive.org/download/death-note-english-s-1-e-14-480-p/Death%20Note%20%5BEnglish%5D-S1E15-480P.mp4",
+            "Episode 16": "https://archive.org/download/death-note-english-s-1-e-14-480-p/Death%20Note%20%5BEnglish%5D-S1E16-480P.mp4",
+            "Episode 17": "https://archive.org/download/death-note-english-s-1-e-14-480-p/Death%20Note%20%5BEnglish%5D-S1E17-480P.mp4",
+            "Episode 18": "https://archive.org/download/death-note-english-s-1-e-14-480-p/Death%20Note%20%5BEnglish%5D-S1E18-480P.mp4",
+            "Episode 19": "https://archive.org/download/death-note-english-s-1-e-14-480-p/Death%20Note%20%5BEnglish%5D-S1E19-480P.mp4",
+            "Episode 20": "https://archive.org/download/death-note-english-s-1-e-14-480-p/Death%20Note%20%5BEnglish%5D-S1E20-480P.mp4",
+            "Episode 21": "https://archive.org/download/death-note-english-s-1-e-34-480-p/Death%20Note%20%5BEnglish%5D-S1E21-480P.mp4",
+            "Episode 22": "https://archive.org/download/death-note-english-s-1-e-34-480-p/Death%20Note%20%5BEnglish%5D-S1E22-480P.mp4",
+            "Episode 23": "https://archive.org/download/death-note-english-s-1-e-34-480-p/Death%20Note%20%5BEnglish%5D-S1E23-480P.mp4",
+            "Episode 24": "https://archive.org/download/death-note-english-s-1-e-34-480-p/Death%20Note%20%5BEnglish%5D-S1E24-480P.mp4",
+            "Episode 25": "https://archive.org/download/death-note-english-s-1-e-34-480-p/Death%20Note%20%5BEnglish%5D-S1E25-480P.mp4",
+            "Episode 26": "https://archive.org/download/death-note-english-s-1-e-34-480-p/Death%20Note%20%5BEnglish%5D-S1E26-480P.mp4",
+            "Episode 27": "https://archive.org/download/death-note-english-s-1-e-34-480-p/Death%20Note%20%5BEnglish%5D-S1E27-480P.mp4",
+            "Episode 28": "https://archive.org/download/death-note-english-s-1-e-34-480-p/Death%20Note%20%5BEnglish%5D-S1E28-480P.mp4",
+            "Episode 29": "https://archive.org/download/death-note-english-s-1-e-34-480-p/Death%20Note%20%5BEnglish%5D-S1E29-480P.mp4",
+            "Episode 30": "https://archive.org/download/death-note-english-s-1-e-34-480-p/Death%20Note%20%5BEnglish%5D-S1E30-480P.mp4",
+            "Episode 31": "https://archive.org/download/death-note-english-s-1-e-34-480-p/Death%20Note%20%5BEnglish%5D-S1E31-480P.mp4",
+            "Episode 32": "https://archive.org/download/death-note-english-s-1-e-34-480-p/Death%20Note%20%5BEnglish%5D-S1E32-480P.mp4",
+            "Episode 33": "https://archive.org/download/death-note-english-s-1-e-34-480-p/Death%20Note%20%5BEnglish%5D-S1E33-480P.mp4",
+            "Episode 34": "https://archive.org/download/death-note-english-s-1-e-34-480-p/Death%20Note%20%5BEnglish%5D-S1E34-480P.mp4",
+            "Episode 35": "https://archive.org/download/death-note-english-s-1-e-34-480-p/Death%20Note%20%5BEnglish%5D-S1E35-480P.mp4",
+            "Episode 36": "https://archive.org/download/death-note-english-s-1-e-34-480-p/Death%20Note%20%5BEnglish%5D-S1E36-480P.mp4",
+            "Episode 37": "https://archive.org/download/death-note-english-s-1-e-34-480-p/Death%20Note%20%5BEnglish%5D-S1E37-480P.mp4"
+          }
+        }
+      },
 
-  function updateViewPrice() {
-    let price = currentP.price;
-    if (currentP.type === 'Wall Mate' && document.getElementById('sizeSelect').value === '8x8') price = 699;
-    document.getElementById('modalPrice').innerText = price + " BDT";
-    return price;
-  }
+      "Solo Leveling": {
+        "info": { "poster": "https://m.media-amazon.com/images/M/MV5BM2M4YzdkMTEtMjUyYy00ZWY0LWI5ODQtNGRkZWQ1MzU5MWM2XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg", "rating": "8.7" },
+        "Season 1": {
+          "Original Audio": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "https://archive.org/download/solo-leveling-s-1-e-3-720-p/Solo%20Leveling-S1E3-720P.mp4", 
+            "Episode 4": "https://archive.org/download/solo-leveling-s-1-e-3-720-p/Solo%20Leveling-S1E4-720P.mp4", 
+            "Episode 5": "https://archive.org/download/solo-leveling-s-1-e-3-720-p/Solo%20Leveling-S1E5-720P.mp4" 
+          },
+          "Hindi Dub": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link" 
+          },
+          "English Dub": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link" 
+          }
+        },
+        "Season 2": {
+          "Original Audio": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link" 
+          },
+          "Hindi Dub": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link" 
+          },
+          "English Dub": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link" 
+          }
+        }
+      },
 
-  /* Cart Logic */
-  function addToCart() {
-    const size = document.getElementById('sizeSelect').value;
-    const price = updateViewPrice();
-    cart.push({ title: currentP.title, size: size, price: price });
-    updateCartCount();
-    alert("Item added to cart!");
-    closeModal('productModal');
-  }
+      "Tokyo Revengers": {
+        "info": { "poster": "https://media-cache.cinematerial.com/p/500x/hs71ooyf/tokyo-revengers-movie-poster.jpg?v=1694421083", "rating": "8.7" },
+        "Season 1": {
+          "Original Audio": { 
+            "Episode 1": "https://archive.org/download/tokyo-revengers-hindi-s-1-e-1-480-p/Tokyo%20Revengers%20%5BHindi%5D-S1E1-480P.mp4", 
+            "Episode 2": "https://archive.org/download/tokyo-revengers-hindi-s-1-e-1-480-p/Tokyo%20Revengers%20%5BHindi%5D-S1E2-480P.mp4", 
+            "Episode 3": "https://archive.org/download/tokyo-revengers-hindi-s-1-e-1-480-p/Tokyo%20Revengers%20%5BHindi%5D-S1E3-480P.mp4", 
+            "Episode 4": "https://archive.org/download/tokyo-revengers-hindi-s-1-e-1-480-p/Tokyo%20Revengers%20%5BHindi%5D-S1E4-480P.mp4", 
+            "Episode 5": "https://archive.org/download/tokyo-revengers-hindi-s-1-e-1-480-p/Tokyo%20Revengers%20%5BHindi%5D-S1E5-480P.mp4",
+            "Episode 6": "https://archive.org/download/tokyo-revengers-hindi-s-1-e-1-480-p/Tokyo%20Revengers%20%5BHindi%5D-S1E6-480P.mp4", 
+            "Episode 7": "https://archive.org/download/tokyo-revengers-hindi-s-1-e-1-480-p/Tokyo%20Revengers%20%5BHindi%5D-S1E7-480P.mp4", 
+            "Episode 8": "https://archive.org/download/tokyo-revengers-hindi-s-1-e-1-480-p/Tokyo%20Revengers%20%5BHindi%5D-S1E8-480P.mp4", 
+            "Episode 9": "link", 
+            "Episode 10": "link",
+            "Episode 11": "link", 
+            "Episode 12": "link", 
+            "Episode 13": "link", 
+            "Episode 14": "link", 
+            "Episode 15": "link",
+            "Episode 16": "link", 
+            "Episode 17": "link", 
+            "Episode 18": "link", 
+            "Episode 19": "link", 
+            "Episode 20": "link"
+          },
+          "Hindi Dub": { 
+              "Episode 1": "https://archive.org/download/tokyo-revengers-hindi-s-1-e-1-480-p/Tokyo%20Revengers%20%5BHindi%5D-S1E1-480P.mp4", 
+            "Episode 2": "https://archive.org/download/tokyo-revengers-hindi-s-1-e-1-480-p/Tokyo%20Revengers%20%5BHindi%5D-S1E2-480P.mp4", 
+            "Episode 3": "https://archive.org/download/tokyo-revengers-hindi-s-1-e-1-480-p/Tokyo%20Revengers%20%5BHindi%5D-S1E3-480P.mp4", 
+            "Episode 4": "https://archive.org/download/tokyo-revengers-hindi-s-1-e-1-480-p/Tokyo%20Revengers%20%5BHindi%5D-S1E4-480P.mp4", 
+            "Episode 5": "https://archive.org/download/tokyo-revengers-hindi-s-1-e-1-480-p/Tokyo%20Revengers%20%5BHindi%5D-S1E5-480P.mp4",
+            "Episode 6": "https://archive.org/download/tokyo-revengers-hindi-s-1-e-1-480-p/Tokyo%20Revengers%20%5BHindi%5D-S1E6-480P.mp4", 
+            "Episode 7": "https://archive.org/download/tokyo-revengers-hindi-s-1-e-1-480-p/Tokyo%20Revengers%20%5BHindi%5D-S1E7-480P.mp4", 
+            "Episode 8": "https://archive.org/download/tokyo-revengers-hindi-s-1-e-1-480-p/Tokyo%20Revengers%20%5BHindi%5D-S1E8-480P.mp4",
+            "Episode 9": "link", 
+            "Episode 10": "link",
+            "Episode 11": "link", 
+            "Episode 12": "link", 
+            "Episode 13": "link", 
+            "Episode 14": "link", 
+            "Episode 15": "link",
+            "Episode 16": "link", 
+            "Episode 17": "link", 
+            "Episode 18": "link", 
+            "Episode 19": "link", 
+            "Episode 20": "link"  
+          },
+          "English Dub": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link",
+            "Episode 6": "link", 
+            "Episode 7": "link", 
+            "Episode 8": "link", 
+            "Episode 9": "link", 
+            "Episode 10": "link",
+            "Episode 11": "link", 
+            "Episode 12": "link", 
+            "Episode 13": "link", 
+            "Episode 14": "link", 
+            "Episode 15": "link",
+            "Episode 16": "link", 
+            "Episode 17": "link", 
+            "Episode 18": "link", 
+            "Episode 19": "link", 
+            "Episode 20": "link" 
+          }
+        },
+        "Season 2": {
+          "Original Audio": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link",
+            "Episode 6": "link", 
+            "Episode 7": "link", 
+            "Episode 8": "link", 
+            "Episode 9": "link", 
+            "Episode 10": "link",
+            "Episode 11": "link", 
+            "Episode 12": "link", 
+            "Episode 13": "link", 
+            "Episode 14": "link", 
+            "Episode 15": "link",
+            "Episode 16": "link", 
+            "Episode 17": "link", 
+            "Episode 18": "link", 
+            "Episode 19": "link", 
+            "Episode 20": "link"  
+          },
+          "Hindi Dub": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link",
+            "Episode 6": "link", 
+            "Episode 7": "link", 
+            "Episode 8": "link", 
+            "Episode 9": "link", 
+            "Episode 10": "link",
+            "Episode 11": "link", 
+            "Episode 12": "link", 
+            "Episode 13": "link", 
+            "Episode 14": "link", 
+            "Episode 15": "link",
+            "Episode 16": "link", 
+            "Episode 17": "link", 
+            "Episode 18": "link", 
+            "Episode 19": "link", 
+            "Episode 20": "link"  
+          },
+          "English Dub": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link",
+            "Episode 6": "link", 
+            "Episode 7": "link", 
+            "Episode 8": "link", 
+            "Episode 9": "link", 
+            "Episode 10": "link",
+            "Episode 11": "link", 
+            "Episode 12": "link", 
+            "Episode 13": "link", 
+            "Episode 14": "link", 
+            "Episode 15": "link",
+            "Episode 16": "link", 
+            "Episode 17": "link", 
+            "Episode 18": "link", 
+            "Episode 19": "link", 
+            "Episode 20": "link"  
+          }
+        }
+      },
 
-  function updateCartCount() {
-    document.getElementById('cartCount').innerText = cart.length;
-  }
+      "Black Clover": {
+        "info": { "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvUKY5QyRXTEnro5dSBk6MF_WTaKWFq16VjQ&s", "rating": "7.2" },
+        "Season 1": {
+          "Original Audio": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link" 
+          },
+          "Hindi Dub": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link" 
+          },
+          "English Dub": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link" 
+          }
+        }
+      },
 
-  function openCart() {
-    document.getElementById('cartModal').style.display = 'block';
-    document.getElementById('cartSection').style.display = 'block';
-    document.body.style.overflow = 'hidden';
-    
-    const list = document.getElementById('cartItemsList');
-    if (cart.length === 0) {
-      list.innerHTML = "<p style='text-align:center;'>Your cart is empty.</p>";
-      document.getElementById('cartTotalDisplay').innerText = "Total: 0 BDT";
-      return;
+      "The Eminence in Ehadow": {
+        "info": { "poster": "https://m.media-amazon.com/images/M/MV5BMDFmMWJlMWYtMDFkNi00OWViLTkzOGEtNDI0YWNmM2M5MzI5XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg", "rating": "7.2" },
+        "Season 1": {
+          "Original Audio": { 
+            "Episode 1": "https://archive.org/download/the-eminence-in-shadow-english-s-1-e-1-480-p/The%20Eminence%20in%20Shadow-S1E1-480P.mp4", 
+            "Episode 2": "https://archive.org/download/the-eminence-in-shadow-english-s-1-e-1-480-p/The%20Eminence%20in%20Shadow-S1E2-480P.mp4", 
+            "Episode 3": "https://archive.org/download/the-eminence-in-shadow-english-s-1-e-1-480-p/The%20Eminence%20in%20Shadow-S1E3-480P.mp4", 
+            "Episode 4": "https://archive.org/download/the-eminence-in-shadow-english-s-1-e-1-480-p/The%20Eminence%20in%20Shadow-S1E4-480P.mp4", 
+            "Episode 5": "https://archive.org/download/the-eminence-in-shadow-english-s-1-e-1-480-p/The%20Eminence%20in%20Shadow-S1E5-480P.mp4" 
+
+          },
+          "English Dub": { 
+            "Episode 1": "https://archive.org/download/the-eminence-in-shadow-english-s-1-e-1-480-p/The%20Eminence%20in%20Shadow%20%5BEnglish%5D-S1E1-480P.mp4", 
+            "Episode 2": "https://archive.org/download/the-eminence-in-shadow-english-s-1-e-1-480-p/The%20Eminence%20in%20Shadow%20%5BEnglish%5D-S1E2-480P.mp4", 
+            "Episode 3": "https://archive.org/download/the-eminence-in-shadow-english-s-1-e-1-480-p/The%20Eminence%20in%20Shadow%20%5BEnglish%5D-S1E3-480P.mp4", 
+            "Episode 4": "https://archive.org/download/the-eminence-in-shadow-english-s-1-e-1-480-p/The%20Eminence%20in%20Shadow%20%5BEnglish%5D-S1E4-480P.mp4", 
+            "Episode 5": "https://archive.org/download/the-eminence-in-shadow-english-s-1-e-1-480-p/The%20Eminence%20in%20Shadow%20%5BEnglish%5D-S1E5-480P.mp4" 
+          }
+        }
+      },
+
+      "One Piece": {
+        "info": { "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvtctxEKPODXyQW7LjXqqPsBhj7ORiYHsIfg&s", "rating": "8.9" },
+        "Season 1": {
+          "Original Audio": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link",
+            "Episode 6": "link", 
+            "Episode 7": "link", 
+            "Episode 8": "link", 
+            "Episode 9": "link", 
+            "Episode 10": "link",
+            "Episode 11": "link", 
+            "Episode 12": "link", 
+            "Episode 13": "link", 
+            "Episode 14": "link", 
+            "Episode 15": "link",
+            "Episode 16": "link", 
+            "Episode 17": "link", 
+            "Episode 18": "link", 
+            "Episode 19": "link", 
+            "Episode 20": "link",
+            "Episode 21": "link", 
+            "Episode 22": "link", 
+            "Episode 23": "link", 
+            "Episode 24": "link", 
+            "Episode 25": "link",
+            "Episode 26": "link", 
+            "Episode 27": "link", 
+            "Episode 28": "link", 
+            "Episode 29": "link", 
+            "Episode 30": "link",
+            "Episode 31": "link", 
+            "Episode 32": "link", 
+            "Episode 33": "link", 
+            "Episode 34": "link", 
+            "Episode 35": "link",
+            "Episode 36": "link", 
+            "Episode 37": "link", 
+            "Episode 38": "link", 
+            "Episode 39": "link", 
+            "Episode 40": "link",
+            "Episode 41": "link", 
+            "Episode 42": "link", 
+            "Episode 43": "link", 
+            "Episode 44": "link", 
+            "Episode 45": "link",
+            "Episode 46": "link", 
+            "Episode 47": "link", 
+            "Episode 48": "link", 
+            "Episode 49": "link", 
+            "Episode 50": "link",
+            "Episode 51": "link", 
+            "Episode 52": "link", 
+            "Episode 53": "link", 
+            "Episode 54": "link", 
+            "Episode 55": "link",
+            "Episode 56": "link", 
+            "Episode 57": "link", 
+            "Episode 58": "link", 
+            "Episode 59": "link", 
+            "Episode 60": "link"        
+          },
+          "Hindi Dub": { 
+            "Episode 1": "https://archive.org/download/one-piece-hindi-s-1-e-53-480-p/ONE%20PIECE%20%5BHindi%5D-S1E50-480P.mp4", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link",
+            "Episode 6": "link", 
+            "Episode 7": "link", 
+            "Episode 8": "link", 
+            "Episode 9": "link", 
+            "Episode 10": "link",
+            "Episode 11": "link", 
+            "Episode 12": "link", 
+            "Episode 13": "link", 
+            "Episode 14": "link", 
+            "Episode 15": "link",
+            "Episode 16": "link", 
+            "Episode 17": "link", 
+            "Episode 18": "link", 
+            "Episode 19": "link", 
+            "Episode 20": "link",
+            "Episode 6": "link", 
+            "Episode 7": "link", 
+            "Episode 8": "link", 
+            "Episode 9": "link", 
+            "Episode 10": "link",
+            "Episode 11": "link", 
+            "Episode 12": "link", 
+            "Episode 13": "link", 
+            "Episode 14": "link", 
+            "Episode 15": "link",
+            "Episode 16": "link", 
+            "Episode 17": "link", 
+            "Episode 18": "link", 
+            "Episode 19": "link", 
+            "Episode 20": "link",
+            "Episode 21": "link", 
+            "Episode 22": "link", 
+            "Episode 23": "link", 
+            "Episode 24": "link", 
+            "Episode 25": "link",
+            "Episode 26": "link", 
+            "Episode 27": "link", 
+            "Episode 28": "link", 
+            "Episode 29": "link", 
+            "Episode 30": "link",
+            "Episode 31": "link", 
+            "Episode 32": "link", 
+            "Episode 33": "link", 
+            "Episode 34": "link", 
+            "Episode 35": "link",
+            "Episode 36": "link", 
+            "Episode 37": "link", 
+            "Episode 38": "link", 
+            "Episode 39": "link", 
+            "Episode 40": "link",
+            "Episode 41": "link", 
+            "Episode 42": "link", 
+            "Episode 43": "link", 
+            "Episode 44": "link", 
+            "Episode 45": "link",
+            "Episode 46": "link", 
+            "Episode 47": "link", 
+            "Episode 48": "link", 
+            "Episode 49": "link", 
+            "Episode 50": "https://archive.org/download/one-piece-hindi-s-1-e-53-480-p_202606/ONE%20PIECE%20%5BHindi%5D-S1E50-480P.mp4",
+            "Episode 51": "https://archive.org/download/one-piece-hindi-s-1-e-53-480-p_202606/ONE%20PIECE%20%5BHindi%5D-S1E51-480P.mp4", 
+            "Episode 52": "https://archive.org/download/one-piece-hindi-s-1-e-53-480-p_202606/ONE%20PIECE%20%5BHindi%5D-S1E52-480P.mp4", 
+            "Episode 53": "https://archive.org/download/one-piece-hindi-s-1-e-53-480-p_202606/ONE%20PIECE%20%5BHindi%5D-S1E53-480P.mp4", 
+            "Episode 54": "link", 
+            "Episode 55": "link",
+            "Episode 56": "link", 
+            "Episode 57": "link", 
+            "Episode 58": "link", 
+            "Episode 59": "link", 
+            "Episode 60": "link"     
+          },
+          "English Dub": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link",
+            "Episode 6": "link", 
+            "Episode 7": "link", 
+            "Episode 8": "link", 
+            "Episode 9": "link", 
+            "Episode 10": "link",
+            "Episode 11": "link", 
+            "Episode 12": "link", 
+            "Episode 13": "link", 
+            "Episode 14": "link", 
+            "Episode 15": "link",
+            "Episode 16": "link", 
+            "Episode 17": "link", 
+            "Episode 18": "link", 
+            "Episode 19": "link", 
+            "Episode 20": "link",
+            "Episode 6": "link", 
+            "Episode 7": "link", 
+            "Episode 8": "link", 
+            "Episode 9": "link", 
+            "Episode 10": "link",
+            "Episode 11": "link", 
+            "Episode 12": "link", 
+            "Episode 13": "link", 
+            "Episode 14": "link", 
+            "Episode 15": "link",
+            "Episode 16": "link", 
+            "Episode 17": "link", 
+            "Episode 18": "link", 
+            "Episode 19": "link", 
+            "Episode 20": "link",
+            "Episode 21": "link", 
+            "Episode 22": "link", 
+            "Episode 23": "link", 
+            "Episode 24": "link", 
+            "Episode 25": "link",
+            "Episode 26": "link", 
+            "Episode 27": "link", 
+            "Episode 28": "link", 
+            "Episode 29": "link", 
+            "Episode 30": "link",
+            "Episode 31": "link", 
+            "Episode 32": "link", 
+            "Episode 33": "link", 
+            "Episode 34": "link", 
+            "Episode 35": "link",
+            "Episode 36": "link", 
+            "Episode 37": "link", 
+            "Episode 38": "link", 
+            "Episode 39": "link", 
+            "Episode 40": "link",
+            "Episode 41": "link", 
+            "Episode 42": "link", 
+            "Episode 43": "link", 
+            "Episode 44": "link", 
+            "Episode 45": "link",
+            "Episode 46": "link", 
+            "Episode 47": "link", 
+            "Episode 48": "link", 
+            "Episode 49": "link", 
+            "Episode 50": "link",
+            "Episode 51": "link", 
+            "Episode 52": "link", 
+            "Episode 53": "link", 
+            "Episode 54": "link", 
+            "Episode 55": "link",
+            "Episode 56": "link", 
+            "Episode 57": "link", 
+            "Episode 58": "link", 
+            "Episode 59": "link", 
+            "Episode 60": "link"      
+          }
+        }
+      },
+
+      "Demon Slayer: Kimetsu no Yaiba": {
+        "info": { "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQqLSe0YxHCOtJikJKKAC5nm7NmlqwyXG1tWA&s", "rating": "8.6" },
+        "Season 1": {
+          "Original Audio": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link",
+            "Episode 6": "link", 
+            "Episode 7": "link", 
+            "Episode 8": "link",
+          },
+          "Hindi Dub": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link",
+            "Episode 6": "link", 
+            "Episode 7": "link", 
+            "Episode 8": "link", 
+            "Episode 9": "link", 
+            "Episode 10": "link",
+            "Episode 11": "link", 
+            "Episode 12": "link", 
+            "Episode 13": "link", 
+            "Episode 14": "link", 
+            "Episode 15": "link",
+            "Episode 16": "link", 
+            "Episode 17": "link", 
+            "Episode 18": "link", 
+            "Episode 19": "link", 
+            "Episode 20": "link" 
+          },
+          "English Dub": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link",
+            "Episode 6": "link", 
+            "Episode 7": "link", 
+            "Episode 8": "link", 
+            "Episode 9": "link", 
+            "Episode 10": "link",
+            "Episode 11": "link", 
+            "Episode 12": "link", 
+            "Episode 13": "link", 
+            "Episode 14": "link", 
+            "Episode 15": "link",
+            "Episode 16": "link", 
+            "Episode 17": "link", 
+            "Episode 18": "link", 
+            "Episode 19": "link", 
+            "Episode 20": "link" 
+          }
+        },
+        "Season 2": {
+          "Original Audio": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link",
+            "Episode 6": "link", 
+            "Episode 7": "link", 
+            "Episode 8": "link", 
+            "Episode 9": "link", 
+            "Episode 10": "link",
+            "Episode 11": "link", 
+            "Episode 12": "link", 
+            "Episode 13": "link", 
+            "Episode 14": "link", 
+            "Episode 15": "link",
+            "Episode 16": "link", 
+            "Episode 17": "link", 
+            "Episode 18": "link", 
+            "Episode 19": "link", 
+            "Episode 20": "link" 
+          },
+          "Hindi Dub": { 
+            "Episode 1": "link", 
+            "Episode 2": "https://archive.org/download/demon-slayer-kimetsu-no-yaiba-hindi-s-2-e-8-480-p_202606/Demon%20Slayer_%20Kimetsu%20no%20Yaiba%20%5BHindi%5D-S2E2-480P.mp4", 
+            "Episode 3": "https://archive.org/download/demon-slayer-kimetsu-no-yaiba-hindi-s-2-e-8-480-p_202606/Demon%20Slayer_%20Kimetsu%20no%20Yaiba%20%5BHindi%5D-S2E3-480P.mp4", 
+            "Episode 4": "https://archive.org/download/demon-slayer-kimetsu-no-yaiba-hindi-s-2-e-8-480-p_202606/Demon%20Slayer_%20Kimetsu%20no%20Yaiba%20%5BHindi%5D-S2E4-480P.mp4", 
+            "Episode 5": "https://archive.org/download/demon-slayer-kimetsu-no-yaiba-hindi-s-2-e-8-480-p_202606/Demon%20Slayer_%20Kimetsu%20no%20Yaiba%20%5BHindi%5D-S2E5-480P.mp4",
+            "Episode 6": "https://archive.org/download/demon-slayer-kimetsu-no-yaiba-hindi-s-2-e-8-480-p_202606/Demon%20Slayer_%20Kimetsu%20no%20Yaiba%20%5BHindi%5D-S2E6-480P.mp4", 
+            "Episode 7": "https://archive.org/download/demon-slayer-kimetsu-no-yaiba-hindi-s-2-e-8-480-p_202606/Demon%20Slayer_%20Kimetsu%20no%20Yaiba%20%5BHindi%5D-S2E7-480P.mp4", 
+            "Episode 8": "https://archive.org/download/demon-slayer-kimetsu-no-yaiba-hindi-s-2-e-8-480-p_202606/Demon%20Slayer_%20Kimetsu%20no%20Yaiba%20%5BHindi%5D-S2E8-480P.mp4", 
+            "Episode 9": "https://archive.org/download/demon-slayer-kimetsu-no-yaiba-hindi-s-2-e-8-480-p_202606/Demon%20Slayer_%20Kimetsu%20no%20Yaiba%20%5BHindi%5D-S2E9-480P.mp4", 
+            "Episode 10": "https://archive.org/download/demon-slayer-kimetsu-no-yaiba-hindi-s-2-e-17-480-p/Demon%20Slayer_%20Kimetsu%20no%20Yaiba%20%5BHindi%5D-S2E10-480P.mp4",
+            "Episode 11": "https://archive.org/download/demon-slayer-kimetsu-no-yaiba-hindi-s-2-e-17-480-p/Demon%20Slayer_%20Kimetsu%20no%20Yaiba%20%5BHindi%5D-S2E11-480P.mp4", 
+            "Episode 12": "https://archive.org/download/demon-slayer-kimetsu-no-yaiba-hindi-s-2-e-17-480-p/Demon%20Slayer_%20Kimetsu%20no%20Yaiba%20%5BHindi%5D-S2E12-480P.mp4", 
+            "Episode 13": "https://archive.org/download/demon-slayer-kimetsu-no-yaiba-hindi-s-2-e-17-480-p/Demon%20Slayer_%20Kimetsu%20no%20Yaiba%20%5BHindi%5D-S2E13-480P.mp4", 
+            "Episode 14": "https://archive.org/download/demon-slayer-kimetsu-no-yaiba-hindi-s-2-e-17-480-p/Demon%20Slayer_%20Kimetsu%20no%20Yaiba%20%5BHindi%5D-S2E14-480P.mp4", 
+            "Episode 15": "https://archive.org/download/demon-slayer-kimetsu-no-yaiba-hindi-s-2-e-17-480-p/Demon%20Slayer_%20Kimetsu%20no%20Yaiba%20%5BHindi%5D-S2E15-480P.mp4",
+            "Episode 16": "https://archive.org/download/demon-slayer-kimetsu-no-yaiba-hindi-s-2-e-17-480-p/Demon%20Slayer_%20Kimetsu%20no%20Yaiba%20%5BHindi%5D-S2E16-480P.mp4", 
+            "Episode 17": "https://archive.org/download/demon-slayer-kimetsu-no-yaiba-hindi-s-2-e-17-480-p/Demon%20Slayer_%20Kimetsu%20no%20Yaiba%20%5BHindi%5D-S2E17-480P.mp4", 
+            "Episode 18": "link", 
+            "Episode 19": "link", 
+            "Episode 20": "link" 
+          },
+          "English Dub": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link",
+            "Episode 6": "link", 
+            "Episode 7": "link", 
+            "Episode 8": "link", 
+            "Episode 9": "link", 
+            "Episode 10": "link",
+            "Episode 11": "link", 
+            "Episode 12": "link", 
+            "Episode 13": "link", 
+            "Episode 14": "link", 
+            "Episode 15": "link",
+            "Episode 16": "link", 
+            "Episode 17": "link", 
+            "Episode 18": "link", 
+            "Episode 19": "link", 
+            "Episode 20": "link"
+          }
+        },
+        "Season 3": {
+          "Original Audio": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link",
+            "Episode 6": "link", 
+            "Episode 7": "link", 
+            "Episode 8": "link", 
+            "Episode 9": "link", 
+            "Episode 10": "link",
+            "Episode 11": "link", 
+            "Episode 12": "link", 
+            "Episode 13": "link", 
+            "Episode 14": "link", 
+            "Episode 15": "link",
+            "Episode 16": "link", 
+            "Episode 17": "link", 
+            "Episode 18": "link", 
+            "Episode 19": "link", 
+            "Episode 20": "link"  
+          },
+          "Hindi Dub": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link",
+            "Episode 6": "link", 
+            "Episode 7": "link", 
+            "Episode 8": "link", 
+            "Episode 9": "link", 
+            "Episode 10": "link",
+            "Episode 11": "link", 
+            "Episode 12": "link", 
+            "Episode 13": "link", 
+            "Episode 14": "link", 
+            "Episode 15": "link",
+            "Episode 16": "link", 
+            "Episode 17": "link", 
+            "Episode 18": "link", 
+            "Episode 19": "link", 
+            "Episode 20": "link"  
+          },
+          "English Dub": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link",
+            "Episode 6": "link", 
+            "Episode 7": "link", 
+            "Episode 8": "link", 
+            "Episode 9": "link", 
+            "Episode 10": "link",
+            "Episode 11": "link", 
+            "Episode 12": "link", 
+            "Episode 13": "link", 
+            "Episode 14": "link", 
+            "Episode 15": "link",
+            "Episode 16": "link", 
+            "Episode 17": "link", 
+            "Episode 18": "link", 
+            "Episode 19": "link", 
+            "Episode 20": "link"  
+          }
+        },
+        "Season 4": {
+          "Original Audio": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link",
+            "Episode 6": "link", 
+            "Episode 7": "link", 
+            "Episode 8": "link", 
+            "Episode 9": "link", 
+            "Episode 10": "link",
+            "Episode 11": "link", 
+            "Episode 12": "link", 
+            "Episode 13": "link", 
+            "Episode 14": "link", 
+            "Episode 15": "link",
+            "Episode 16": "link", 
+            "Episode 17": "link", 
+            "Episode 18": "link", 
+            "Episode 19": "link", 
+            "Episode 20": "link"  
+          },
+          "Hindi Dub": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "https://archive.org/download/demon-slayer-kimetsu-no-yaiba-hindi-s-4-e-11-480-p_202606/Demon%20Slayer_%20Kimetsu%20no%20Yaiba%20%5BHindi%5D-S4E5-360P.mp4",
+            "Episode 6": "https://archive.org/download/demon-slayer-kimetsu-no-yaiba-hindi-s-4-e-11-480-p_202606/Demon%20Slayer_%20Kimetsu%20no%20Yaiba%20%5BHindi%5D-S4E6-360P.mp4", 
+            "Episode 7": "https://archive.org/download/demon-slayer-kimetsu-no-yaiba-hindi-s-4-e-11-480-p_202606/Demon%20Slayer_%20Kimetsu%20no%20Yaiba%20%5BHindi%5D-S4E7-480P.mp4", 
+            "Episode 8": "https://archive.org/download/demon-slayer-kimetsu-no-yaiba-hindi-s-4-e-11-480-p_202606/Demon%20Slayer_%20Kimetsu%20no%20Yaiba%20%5BHindi%5D-S4E8-480P.mp4", 
+            "Episode 9": "https://archive.org/download/demon-slayer-kimetsu-no-yaiba-hindi-s-4-e-11-480-p_202606/Demon%20Slayer_%20Kimetsu%20no%20Yaiba%20%5BHindi%5D-S4E9-480P.mp4", 
+            "Episode 10": "https://archive.org/download/demon-slayer-kimetsu-no-yaiba-hindi-s-4-e-11-480-p_202606/Demon%20Slayer_%20Kimetsu%20no%20Yaiba%20%5BHindi%5D-S4E10-480P.mp4",
+            "Episode 11": "https://archive.org/download/demon-slayer-kimetsu-no-yaiba-hindi-s-4-e-11-480-p_202606/Demon%20Slayer_%20Kimetsu%20no%20Yaiba%20%5BHindi%5D-S4E11-480P.mp4", 
+            "Episode 12": "link", 
+            "Episode 13": "link", 
+            "Episode 14": "link", 
+            "Episode 15": "link",
+            "Episode 16": "link", 
+            "Episode 17": "link", 
+            "Episode 18": "link", 
+            "Episode 19": "link", 
+            "Episode 20": "link"  
+          },
+          "English Dub": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link",
+            "Episode 6": "link", 
+            "Episode 7": "link", 
+            "Episode 8": "link", 
+            "Episode 9": "link", 
+            "Episode 10": "link",
+            "Episode 11": "link", 
+            "Episode 12": "link", 
+            "Episode 13": "link", 
+            "Episode 14": "link", 
+            "Episode 15": "link",
+            "Episode 16": "link", 
+            "Episode 17": "link", 
+            "Episode 18": "link", 
+            "Episode 19": "link", 
+            "Episode 20": "link"  
+          }
+        }
+      },
+
+      "Dragon Ball(Original)": {
+        "info": { "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQ_yufUazNMRhULYuSH5XhslPPsK5MT-JmOOon8WtJ6w&s=10", "rating": "8.5" },
+        "Season 1": {
+          "Original Audio": { 
+            "Episode 1": "https://archive.org/download/dragon-ball-hindi-s-1-e-5-480-p/Dragon%20Ball%20%5BHindi%5D-S1E1-480P.mp4", 
+            "Episode 2": "https://archive.org/download/dragon-ball-hindi-s-1-e-5-480-p/Dragon%20Ball%20%5BHindi%5D-S1E2-480P.mp4", 
+            "Episode 3": "https://archive.org/download/dragon-ball-hindi-s-1-e-5-480-p/Dragon%20Ball%20%5BHindi%5D-S1E3-480P.mp4", 
+            "Episode 4": "https://archive.org/download/dragon-ball-hindi-s-1-e-5-480-p/Dragon%20Ball%20%5BHindi%5D-S1E4-480P.mp4", 
+            "Episode 5": "https://archive.org/download/dragon-ball-hindi-s-1-e-5-480-p/Dragon%20Ball%20%5BHindi%5D-S1E5-480P.mp4" 
+          },
+          "Hindi Dub": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link" 
+          },
+          "English Dub": { 
+            "Episode 1": "https://archive.org/download/dragon-ball-english-s-1-e-2-480-p/Dragon%20Ball%20%5BEnglish%5D-S1E1-480P.mp4", 
+            "Episode 2": "https://archive.org/download/dragon-ball-english-s-1-e-2-480-p/Dragon%20Ball%20%5BEnglish%5D-S1E2-480P.mp4", 
+            "Episode 3": "https://archive.org/download/dragon-ball-english-s-1-e-3-480-p/Dragon%20Ball%20%5BEnglish%5D-S1E3-480P.mp4", 
+            "Episode 4": "https://archive.org/download/dragon-ball-english-s-1-e-5-480-p/Dragon%20Ball%20%5BEnglish%5D-S1E4-480P.mp4", 
+            "Episode 5": "https://archive.org/download/dragon-ball-english-s-1-e-5-480-p/Dragon%20Ball%20%5BEnglish%5D-S1E5-480P.mp4"          }
+        }
+      },
+
+      "Dragon Ball Z": {
+        "info": { "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMSzJQINnPT54bpDsik-eGzZyaPP4NpwIFJW5qhrEFdzoUSZsfSAdHpNA3&s=10", "rating": "8.7" },
+        "Season 1": {
+          "Original Audio": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link" 
+          },
+          "Hindi Dub": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link" 
+          },
+          "English Dub": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link"
+          }
+        }
+      },
+
+      "Hunter × Hunter": {
+        "info": { "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPsSFwg5KHyr44lDoCQoUMTfG9Y1WhOezmB1H_3DHgF731bLgNe-dyloE&s=10", "rating": "8.7" },
+        "Season 1": {
+          "Original Audio": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link" 
+          },
+          "Hindi Dub": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link" 
+          },
+          "English Dub": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link"
+          }
+        }
+      },
+
+      "Bleach": {
+        "info": { "poster": "https://m.media-amazon.com/images/M/MV5BOWQwOWY5NTUtMjAyZi00YjQzLTkwODgtNmQwZjU1MGIzZDhjXkEyXkFqcGc@._V1_.jpg", "rating": "8.7" },
+        "Season 1": {
+          "Original Audio": { 
+            "Episode 1": "https://archive.org/download/bleach-s-1-e-1-480-p/Bleach-S1E1-480P.mp4", 
+            "Episode 2": "https://archive.org/download/bleach-s-1-e-1-480-p/Bleach-S1E2-480P.mp4", 
+            "Episode 3": "https://archive.org/download/bleach-s-1-e-1-480-p/Bleach-S1E3-480P.mp4", 
+            "Episode 4": "link", 
+            "Episode 5": "https://archive.org/download/bleach-s-1-e-1-480-p/Bleach-S1E5-480P.mp4" 
+          },
+          "Hindi Dub": { 
+            "Episode 1": "https://archive.org/download/bleach-hindi-s-1-e-1-480-p/Bleach%20%5BHindi%5D-S1E1-480P.mp4", 
+            "Episode 2": "https://archive.org/download/bleach-hindi-s-1-e-1-480-p/Bleach%20%5BHindi%5D-S1E2-480P.mp4", 
+            "Episode 3": "https://archive.org/download/bleach-hindi-s-1-e-1-480-p/Bleach%20%5BHindi%5D-S1E3-480P.mp4", 
+            "Episode 4": "https://archive.org/download/bleach-hindi-s-1-e-1-480-p/Bleach%20%5BHindi%5D-S1E4-480P.mp4", 
+            "Episode 5": "https://archive.org/download/bleach-hindi-s-1-e-1-480-p/Bleach%20%5BHindi%5D-S1E5-480P.mp4" 
+          },
+          "English Dub": { 
+            "Episode 1": "https://archive.org/download/bleach-hindi-s-1-e-1-480-p/Bleach%20%5BEnglish%5D-S1E1-480P.mp4", 
+            "Episode 2": "https://archive.org/download/bleach-hindi-s-1-e-1-480-p/Bleach%20%5BEnglish%5D-S1E2-480P.mp4", 
+            "Episode 3": "https://archive.org/download/bleach-hindi-s-1-e-1-480-p/Bleach%20%5BEnglish%5D-S1E3-480P.mp4", 
+            "Episode 4": "https://archive.org/download/bleach-hindi-s-1-e-1-480-p/Bleach%20%5BEnglish%5D-S1E4-480P.mp4", 
+            "Episode 5": "https://archive.org/download/bleach-hindi-s-1-e-1-480-p/Bleach%20%5BEnglish%5D-S1E5-480P.mp4"     
+          }
+        }
+      },
+
+      "Jujutsu Kaisen": {
+        "info": { "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRTbgbLBB-3oVK_OhY1vJ4EOBkN6aQA1yKxwg&s", "rating": "8.6" },
+        "Season 1": {
+          "Original Audio": { 
+            "Episode 1": "https://archive.org/download/jujutsu-kaisen-hindi-s-1-e-4-480-p_202606/Jujutsu%20Kaisen-S1E1-480P.mp4", 
+            "Episode 2": "https://archive.org/download/jujutsu-kaisen-hindi-s-1-e-4-480-p_202606/Jujutsu%20Kaisen-S1E2-480P.mp4", 
+            "Episode 3": "link", 
+            "Episode 4": "https://archive.org/download/jujutsu-kaisen-hindi-s-1-e-4-480-p/Jujutsu%20Kaisen-S1E4-480P.mp4", 
+            "Episode 5": "https://archive.org/download/jujutsu-kaisen-hindi-s-1-e-4-480-p/Jujutsu%20Kaisen-S1E5-480P.mp4" 
+          },
+          "Hindi Dub": { 
+            "Episode 1": "https://archive.org/download/jujutsu-kaisen-hindi-s-1-e-4-480-p_202606/Jujutsu%20Kaisen%20%5BHindi%5D-S1E1-480P.mp4", 
+            "Episode 2": "https://archive.org/download/jujutsu-kaisen-hindi-s-1-e-4-480-p_202606/Jujutsu%20Kaisen%20%5BHindi%5D-S1E2-480P.mp4", 
+            "Episode 3": "https://archive.org/download/jujutsu-kaisen-hindi-s-1-e-4-480-p_202606/Jujutsu%20Kaisen%20%5BHindi%5D-S1E3-480P.mp4", 
+            "Episode 4": "https://archive.org/download/jujutsu-kaisen-hindi-s-1-e-4-480-p_202606/Jujutsu%20Kaisen%20%5BHindi%5D-S1E4-480P.mp4", 
+            "Episode 5": "https://archive.org/download/jujutsu-kaisen-hindi-s-1-e-4-480-p_202606/Jujutsu%20Kaisen%20%5BHindi%5D-S1E5-480P.mp4" 
+          },
+          "English Dub": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link" 
+          }
+        }
+      },
+
+      "Monster": {
+        "info": { "poster": "https://upload.wikimedia.org/wikipedia/en/2/2d/Monster_%28manga_-_promo_image%29.jpg", "rating": "8.7" },
+        "Season 1": {
+          "Original Audio": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link" 
+          }
+        }
+      },
+
+      "Attack on Titan": {
+        "info": { "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTG7GljTfEqWuOz2NmvdwwQRqVmkn2mdCkfiA&s", "rating": "9.1" },
+        "Season 1": {
+          "Original Audio": { 
+            "Episode 1": "https://archive.org/download/attack-on-titan-english-s-1-e-1-480-p/Attack%20on%20Titan-S1E1-480P.mp4", 
+            "Episode 2": "https://archive.org/download/attack-on-titan-english-s-1-e-1-480-p/Attack%20on%20Titan-S1E2-480P.mp4", 
+            "Episode 3": "https://archive.org/download/attack-on-titan-english-s-1-e-1-480-p/Attack%20on%20Titan%20%5BHindi%5D-S1E3-480P.mp4", 
+            "Episode 4": "https://archive.org/download/attack-on-titan-english-s-1-e-1-480-p/Attack%20on%20Titan-S1E4-480P.mp4", 
+            "Episode 5": "https://archive.org/download/attack-on-titan-english-s-1-e-1-480-p/Attack%20on%20Titan-S1E5-480P.mp4" 
+          },
+          "Hindi Dub": { 
+            "Episode 1": "https://archive.org/download/attack-on-titan-english-s-1-e-1-480-p/Attack%20on%20Titan%20%5BHindi%5D-S1E1-480P.mp4", 
+            "Episode 2": "https://archive.org/download/attack-on-titan-english-s-1-e-1-480-p/Attack%20on%20Titan%20%5BHindi%5D-S1E2-480P.mp4", 
+            "Episode 3": "https://archive.org/download/attack-on-titan-english-s-1-e-1-480-p/Attack%20on%20Titan%20%5BHindi%5D-S1E3-480P.mp4", 
+            "Episode 4": "https://archive.org/download/attack-on-titan-english-s-1-e-1-480-p/Attack%20on%20Titan%20%5BHindi%5D-S1E4-480P.mp4", 
+            "Episode 5": "https://archive.org/download/attack-on-titan-english-s-1-e-1-480-p/Attack%20on%20Titan%20%5BHindi%5D-S1E5-480P.mp4" 
+          },
+          "English Dub": { 
+            "Episode 1": "https://archive.org/download/attack-on-titan-english-s-1-e-1-480-p/Attack%20on%20Titan%20%5BEnglish%5D-S1E1-480P.mp4", 
+            "Episode 2": "https://archive.org/download/attack-on-titan-english-s-1-e-1-480-p/Attack%20on%20Titan%20%5BEnglish%5D-S1E2-480P.mp4", 
+            "Episode 3": "https://archive.org/download/attack-on-titan-english-s-1-e-1-480-p/Attack%20on%20Titan%20%5BEnglish%5D-S1E3-480P.mp4", 
+            "Episode 4": "https://archive.org/download/attack-on-titan-english-s-1-e-1-480-p/Attack%20on%20Titan%20%5BEnglish%5D-S1E4-480P.mp4", 
+            "Episode 5": "https://archive.org/download/attack-on-titan-english-s-1-e-1-480-p/Attack%20on%20Titan%20%5BEnglish%5D-S1E5-480P.mp4" 
+          }
+        }
+      },
+
+      "My Hero Academia": {
+        "info": { "poster": "https://m.media-amazon.com/images/M/MV5BY2QzODA5OTQtYWJlNi00ZjIzLThhNTItMDMwODhlYzYzMjA2XkEyXkFqcGc@._V1_.jpg", "rating": "7.9" },
+        "Season 1": {
+          "Original Audio": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link" 
+          },
+          "Hindi Dub": { 
+            "Episode 1": "https://archive.org/download/my-hero-academia-hindi-s-1-e-5-480-p/My%20Hero%20Academia%20%5BHindi%5D-S1E1-480P.mp4", 
+            "Episode 2": "https://archive.org/download/my-hero-academia-hindi-s-1-e-5-480-p/My%20Hero%20Academia%20%5BHindi%5D-S1E2-480P.mp4", 
+            "Episode 3": "https://archive.org/download/my-hero-academia-hindi-s-1-e-5-480-p/My%20Hero%20Academia%20%5BHindi%5D-S1E3-480P.mp4", 
+            "Episode 4": "https://archive.org/download/my-hero-academia-hindi-s-1-e-5-480-p/My%20Hero%20Academia%20%5BHindi%5D-S1E4-480P.mp4", 
+            "Episode 5": "https://archive.org/download/my-hero-academia-hindi-s-1-e-5-480-p/My%20Hero%20Academia%20%5BHindi%5D-S1E5-480P.mp4" 
+          },
+          "English Dub": { 
+            "Episode 1": "link", 
+            "Episode 2": "link", 
+            "Episode 3": "link", 
+            "Episode 4": "link", 
+            "Episode 5": "link" 
+          }
+        }
+      },
+
+      "Sakamoto Days": {
+        "info": { "poster": "https://m.media-amazon.com/images/M/MV5BNTM4MmZiNjEtOGY0MC00MGM0LTkxZjEtODUxMmJmZWEwOWU3XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg", "rating": "8.5" },
+        "Season 1": {
+          "Original Audio": { 
+            "Episode 1": "https://archive.org/download/sakamoto-days-s-1-e-3-480-p/Sakamoto%20Days-S1E1-480P.mp4", 
+            "Episode 2": "https://archive.org/download/sakamoto-days-s-1-e-2-480-p/Sakamoto%20Days-S1E2-480P.mp4", 
+            "Episode 3": "https://archive.org/download/sakamoto-days-s-1-e-3-480-p/Sakamoto%20Days-S1E3-480P.mp4", 
+            "Episode 4": "https://archive.org/download/sakamoto-days-s-1-e-3-480-p/Sakamoto%20Days-S1E4-480P.mp4", 
+            "Episode 5": "https://archive.org/download/sakamoto-days-s-1-e-3-480-p/Sakamoto%20Days-S1E5-480P.mp4" 
+          },
+          "Hindi Dub": { 
+            "Episode 1": "https://archive.org/download/sakamoto-days-hindi-s-1-e-1-480-p/Sakamoto%20Days%20%5BHindi%5D-S1E1-480P.mp4", 
+            "Episode 2": "https://archive.org/download/sakamoto-days-hindi-s-1-e-1-480-p/Sakamoto%20Days%20%5BHindi%5D-S1E2-480P.mp4", 
+            "Episode 3": "https://archive.org/download/sakamoto-days-hindi-s-1-e-1-480-p/Sakamoto%20Days%20%5BHindi%5D-S1E3-480P.mp4", 
+            "Episode 4": "https://archive.org/download/sakamoto-days-hindi-s-1-e-1-480-p/Sakamoto%20Days%20%5BHindi%5D-S1E4-480P.mp4", 
+            "Episode 5": "https://archive.org/download/sakamoto-days-hindi-s-1-e-5-480-p/Sakamoto%20Days%20%5BHindi%5D-S1E5-480P.mp4" 
+          },
+          "English Dub": { 
+            "Episode 1": "https://archive.org/download/sakamoto-days-english-s-1-e-1-480-p_202606/Sakamoto%20Days%20%5BEnglish%5D-S1E1-480P.mp4", 
+            "Episode 2": "https://archive.org/download/sakamoto-days-english-s-1-e-1-480-p_202606/Sakamoto%20Days%20%5BEnglish%5D-S1E2-480P.mp4", 
+            "Episode 3": "https://archive.org/download/sakamoto-days-english-s-1-e-1-480-p_202606/Sakamoto%20Days%20%5BEnglish%5D-S1E3-480P.mp4", 
+            "Episode 4": "https://archive.org/download/sakamoto-days-english-s-1-e-1-480-p_202606/Sakamoto%20Days%20%5BEnglish%5D-S1E4-480P.mp4", 
+            "Episode 5": "https://archive.org/download/sakamoto-days-english-s-1-e-1-480-p_202606/Sakamoto%20Days%20%5BEnglish%5D-S1E5-480P.mp4" 
+          }
+        }
+      }
+    };
+
+    let currentAnime = "";
+    const player = document.getElementById('videoPlayer');
+
+    function displayAnime(data) {
+      const grid = document.getElementById('animeGrid');
+      grid.innerHTML = '';
+      for (let animeName in data) {
+        const anime = data[animeName];
+        const card = document.createElement('div');
+        card.className = 'anime-card';
+        card.innerHTML = `
+          <img src="${anime.info.poster}" alt="${animeName}" onerror="this.src='https://via.placeholder.com/200x280?text=${encodeURIComponent(animeName)}'">
+          <div class="anime-info">
+            <h3>${animeName}</h3>
+            <p>Rating: ⭐ ${anime.info.rating}</p>
+          </div>
+        `;
+        card.addEventListener('click', () => loadAnimeToPlayer(animeName));
+        grid.appendChild(card);
+      }
     }
 
-    let total = 0;
-    list.innerHTML = cart.map((item, index) => {
-      total += item.price;
-      return `<div class="cart-item">
-                <p><b>${item.title}</b> (Size: ${item.size}) <br> <small>${item.price} BDT</small></p>
-                <span class="remove-btn" onclick="removeFromCart(${index})">X Remove</span>
-              </div>`;
-    }).join('');
-    document.getElementById('cartTotalDisplay').innerText = `Subtotal: ${total} BDT`;
-  }
-
-  function removeFromCart(index) {
-    cart.splice(index, 1);
-    updateCartCount();
-    openCart();
-  }
-
-  /* Checkout Form Logic */
-  let isCartCheckout = false;
-  let baseCheckoutTotal = 0;
-
-  function showOrderForm(fromCart) {
-    isCartCheckout = fromCart;
-    baseCheckoutTotal = 0;
-    let itemsString = "";
-
-    if (fromCart) {
-      if(cart.length === 0) return alert("Cart is empty!");
-      cart.forEach(item => { baseCheckoutTotal += item.price; itemsString += `${item.title} (${item.size}), `; });
-      document.getElementById('cartModal').style.display = 'none';
-      document.getElementById('productModal').style.display = 'block';
-    } else {
-      baseCheckoutTotal = updateViewPrice();
-      itemsString = `${currentP.title} (${document.getElementById('sizeSelect').value})`;
+    function loadAnimeToPlayer(animeName) {
+      currentAnime = animeName;
+      document.getElementById('playingTitle').innerText = `Now Playing: ${animeName}`;
+      document.getElementById('playerSection').style.display = 'block';
+      window.scrollTo({ top: document.getElementById('playerSection').offsetTop - 20, behavior: 'smooth' });
+      const seasons = Object.keys(animeData[animeName]).filter(key => key !== 'info');
+      const seasonSelect = document.getElementById('seasonSelect');
+      
+      seasonSelect.innerHTML = '';
+      seasons.forEach(season => {
+        seasonSelect.innerHTML += `<option value="${season}">${season}</option>`;
+      });
+      updateLanguages();
     }
 
-    document.getElementById('productDetailView').style.display = 'none';
-    document.getElementById('orderFormSection').style.display = 'block';
-    document.getElementById('finalProdName').value = itemsString;
-    document.getElementById('paymentMethod').value = 'Cash on Delivery'; // Default
-    document.getElementById('deliveryLocation').value = 'Narayanganj'; // Default
-    togglePaymentBox(); 
-  }
+    function updateLanguages() {
+      const seasonSelect = document.getElementById('seasonSelect').value;
+      const languages = Object.keys(animeData[currentAnime][seasonSelect]);
+      const languageSelect = document.getElementById('languageSelect');
 
-  function checkoutFromCart() { showOrderForm(true); }
-
-  // ডেলিভারি এরিয়া এবং পেমেন্ট মেথড অনুযায়ী নতুন ক্যালকুলেশন লজিক
-  function togglePaymentBox() {
-    const method = document.getElementById('paymentMethod').value;
-    const location = document.getElementById('deliveryLocation').value;
-    const bkashNagadSection = document.getElementById('bkashNagadSection');
-    
-    let finalTotal = baseCheckoutTotal;
-
-    // ১. নতুন ডেলিভারি ফি লজিক
-    if (location === 'Narayanganj') {
-      finalTotal += 60;
-    } else if (location === 'Dhaka') {
-      finalTotal += 115;
-    } else if (location === 'Other Districts') {
-      finalTotal += 135;
+      languageSelect.innerHTML = '';
+      languages.forEach(lang => {
+        languageSelect.innerHTML += `<option value="${lang}">${lang}</option>`;
+      });
+      updateEpisodes();
     }
 
-    // ২. পেমেন্ট মেথড লজিক
-    if (method === 'Pre-payment') {
-      bkashNagadSection.style.display = 'block';
-    } else {
-      bkashNagadSection.style.display = 'none';
-      finalTotal += 20; // COD চার্জ
+    function updateEpisodes() {
+      const seasonSelect = document.getElementById('seasonSelect').value;
+      const languageSelect = document.getElementById('languageSelect').value;
+      const episodes = Object.keys(animeData[currentAnime][seasonSelect][languageSelect]);
+      const episodeSelect = document.getElementById('episodeSelect');
+
+      episodeSelect.innerHTML = '';
+      episodes.forEach(ep => {
+        episodeSelect.innerHTML += `<option value="${ep}">${ep}</option>`;
+      });
+      playVideo();
     }
 
-    document.getElementById('checkoutTotalDisplay').innerText = `Total: ${finalTotal} BDT`;
-    document.getElementById('finalPriceInput').value = finalTotal + " BDT";
-  }
+    function playVideo() {
+      const seasonSelect = document.getElementById('seasonSelect').value;
+      const languageSelect = document.getElementById('languageSelect').value;
+      const episodeSelect = document.getElementById('episodeSelect').value;
+      
+      let videoUrl = animeData[currentAnime][seasonSelect][languageSelect][episodeSelect];
+      
+      if (typeof videoUrl === 'object' && videoUrl !== null) {
+          videoUrl = videoUrl["720p"] || videoUrl["1080p"] || videoUrl["480p"];
+      }
 
-  function closeModal(id) {
-    document.getElementById(id).style.display = 'none';
-    document.body.style.overflow = 'auto';
-  }
+      if(videoUrl && videoUrl !== "link") {
+        player.src = videoUrl;
+        player.load();
+      } else {
+        player.src = "";
+        alert("This episode link is just a placeholder ('link')! Please add real links in the code.");
+      }
+    }
 
-  // Initialize
-  renderGrid(products);
-</script>
+    // --- SEQUENTIAL AD ROTATION SYSTEM ---
+    function launchAd() {
+      if(adsterraUrls.length > 0) {
+        const currentAdUrl = adsterraUrls[currentAdIndex];
+        
+        if(currentAdUrl && !currentAdUrl.includes("YOUR_ADSTERRA_DIRECT_LINK")) {
+          window.open(currentAdUrl, '_blank');
+        }
+        
+        currentAdIndex = (currentAdIndex + 1) % adsterraUrls.length;
+      }
+    }
+
+    player.addEventListener('play', () => {
+      launchAd();
+      
+      if(!adTimer) {
+        adTimer = setInterval(() => {
+          launchAd();
+        }, 10 * 60 * 1000); // 10 minutes loop
+      }
+    });
+
+    player.addEventListener('pause', () => {
+      clearInterval(adTimer);
+      adTimer = null;
+    });
+
+    player.addEventListener('ended', () => {
+      clearInterval(adTimer);
+      adTimer = null;
+    });
+
+    document.getElementById('seasonSelect').addEventListener('change', updateLanguages);
+    document.getElementById('languageSelect').addEventListener('change', updateEpisodes);
+    document.getElementById('episodeSelect').addEventListener('change', playVideo);
+    document.getElementById('searchBar').addEventListener('input', (e) => {
+      const searchTxt = e.target.value.toLowerCase();
+      const filteredData = {};
+      
+      for (let name in animeData) {
+        if (name.toLowerCase().includes(searchTxt)) {
+          filteredData[name] = animeData[name];
+        }
+      }
+      displayAnime(filteredData);
+    });
+    window.onload = () => {
+      displayAnime(animeData);
+    };
+  </script>
 </body>
 </html>
